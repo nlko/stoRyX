@@ -1,4 +1,5 @@
 import { Map } from './map'
+import 'rxjs/src/add/operator/take'
 
 describe('Map tests', () => {
   const map = new Map()
@@ -17,6 +18,18 @@ describe('Map tests', () => {
     map.get$('smth').subscribe(cb1)
 
     expect(cb1).toHaveBeenCalledTimes(0)
+  })
+
+  it('As a USER, geting with a default value on an empty Map never returns the default value', () => {
+    const cb1 = jasmine.createSpy('optional name');
+
+    map.getOr$(1,'smth').subscribe(cb1)
+    expect(cb1).toHaveBeenCalledTimes(1)
+    expect(cb1).toHaveBeenCalledWith(1)
+    map.getOr$(undefined,'smth').subscribe(cb1)
+    expect(cb1).toHaveBeenCalledTimes(2)
+    expect(cb1).toHaveBeenCalledWith(undefined)
+
   })
 
   it('As a USER, trying to test if a value exists (IsSet) on an empty Map resolve to false', () => {
@@ -38,6 +51,28 @@ describe('Map tests', () => {
     expect(isSet1).toHaveBeenCalledTimes(1)
     expect(isSet1).toHaveBeenCalledWith(1)
   })
+
+  it('As a USER, I can subscribe on isSet$ observable and get updates', () => {
+    const cb1 = jasmine.createSpy('spy 1');
+    const cb2 = jasmine.createSpy('spy 2');
+    const cb3 = jasmine.createSpy('spy 3');
+
+    map.isSet$('smth').take(1).subscribe(cb1)
+    map.isSet$('smth').subscribe(cb3)
+    map.set('smth2', 1)
+    map.set('smth', 1)
+    map.isSet$('smth').take(1).subscribe(cb2)
+
+    expect(cb1).toHaveBeenCalledTimes(1)
+    expect(cb1).toHaveBeenCalledWith(false)
+
+    expect(cb2).toHaveBeenCalledTimes(1)
+    expect(cb2).toHaveBeenCalledWith(true)
+
+    expect(cb3).toHaveBeenCalledTimes(2)
+    expect(cb3).toHaveBeenCalledWith(true)
+  })
+
 
   it('As a USER, it is possible to change a set value', () => {
     const isSet1 = jasmine.createSpy('optional name');
@@ -83,7 +118,7 @@ describe('Map tests', () => {
 
   })
 
-  it('As a USER, I can delete a value', () => {
+  it('As a USER, I can delete a value and receive subscription update', () => {
     const isSet1 = jasmine.createSpy('optional name');
     map.set('smth', 1)
 

@@ -5,6 +5,7 @@ import 'rxjs/src/add/operator/map'
 import 'rxjs/src/add/operator/do'
 import 'rxjs/src/add/operator/filter'
 import 'rxjs/src/add/operator/distinctUntilChanged'
+import 'rxjs/src/add/operator/share'
 
 type MapState = any
 export type MapData = any
@@ -32,12 +33,16 @@ export class Map extends State<MapState> {
     this.set$.next({ name, data })
   }
 
+  getOr$ = (defValue: any, $name: string) => this.data$
+    .map(map => map[name] !== undefined ? map[name] : defValue)
+    .distinctUntilChanged()
+
   get$ = (name: string) => this.data$
     .filter(map => map[name] !== undefined)
     .map(map => map[name])
     .distinctUntilChanged()
 
-  isSet$ = (name: string) => this.data$.map(map => map[name] !== undefined).distinctUntilChanged()
+  isSet$ = (name: string) => this.data$.asObservable().map(map => map[name] !== undefined).distinctUntilChanged()
 
   delete(name: string) {
     this.delete$.next(name)

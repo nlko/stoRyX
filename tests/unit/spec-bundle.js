@@ -5,8 +5,12 @@ var testContext = require.context('./../../src', true, /\.spec\.ts/);
 function requireAll(requireContext) {
   const allContexts = requireContext.keys()
 
-  // list test that can be run (if empty, run them all)
-  const runableTests = ['store']
+  // list test that can be run
+  // - if empty, run them all
+  // - without .spec.ts
+  // - without ./ at the start
+  // for example : ['store','myservice']
+  const runableTests = []
 
   const runableTestsFiles = runableTests.map(name => "./" + name + ".spec.ts")
 
