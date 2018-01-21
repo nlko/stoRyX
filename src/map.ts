@@ -1,11 +1,8 @@
 import State from './state'
 import { Subject } from 'rxjs/src/Subject'
-//import { BehaviorSubject } from 'rxjs/src/BehaviorSubject'
 import 'rxjs/src/add/operator/map'
-import 'rxjs/src/add/operator/do'
 import 'rxjs/src/add/operator/filter'
 import 'rxjs/src/add/operator/distinctUntilChanged'
-import 'rxjs/src/add/operator/share'
 
 type MapState = any
 export type MapData = any

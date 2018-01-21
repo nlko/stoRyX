@@ -55,7 +55,7 @@ describe('Store tests', () => {
 
   })
 
-  it('As a USER I can update a value in a Store', () => {
+  it('As a USER, I can update a value in a Store', () => {
     //const spied = { cb1: cbval(1) }
     //spyOn(spied, 'cb1');
     const cb1 = jasmine.createSpy('optional name');
