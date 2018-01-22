@@ -1,6 +1,15 @@
-before_script:
-  - npm install
-  
+image: node:slim
+
+cache:
+  paths:
+  - node_modules/
+
+stages:
+  - test
+
+
 test:
+  stage: test
   script:
+    - npm install
     - npm test
