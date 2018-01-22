@@ -1,4 +1,4 @@
-import State from './state'
+import { State } from './state'
 import { Subject } from 'rxjs/src/Subject'
 import 'rxjs/src/add/operator/map'
 import 'rxjs/src/add/operator/filter'

@@ -2,7 +2,7 @@ import { Subject } from 'rxjs/src/Subject'
 import { BehaviorSubject } from 'rxjs/src/BehaviorSubject'
 import 'rxjs/src/add/operator/scan'
 
-export default class State<S> {
+export class State<S> {
   data$: BehaviorSubject<S>
 
   public updater$: Subject<(s: S) => S>

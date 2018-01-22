@@ -1,4 +1,4 @@
-import State from './state'
+import { State } from './state'
 import { hot, cold } from 'jasmine-marbles';
 
 describe('State Tests', () => {

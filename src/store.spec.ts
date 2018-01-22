@@ -1,4 +1,4 @@
-import Store from './store'
+import { Store } from './store'
 import * as Rx from 'rxjs'
 
 describe('Store tests', () => {

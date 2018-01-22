@@ -1,5 +1,5 @@
 import { Map, MapData } from './map'
-import State from './state'
+import { State } from './state'
 
 import { Subject } from 'rxjs/src/Subject'
 import { Observable } from 'rxjs/src/Observable'
@@ -15,7 +15,7 @@ type StoreData = any
 type StoreChangeMessage = { name: string, data: StoreData }
 
 type SubscriberFn = (data: StoreData) => void
-type Subscriber = { name: string, cb: SubscriberFn }
+//type SubscriberField = { name: string, cb: SubscriberFn }
 class Subscribers extends Map {
   constructor() {
     super({})
@@ -32,7 +32,7 @@ class Subscribers extends Map {
       })
 }
 
-export default class Store {
+export class Store {
   private history$: State<StoreHistory> = new State<StoreHistory>([])
   private changed$: Subject<StoreChangeMessage> = new Subject()
 
