@@ -3,6 +3,7 @@ import { State } from './state'
 
 import { Subject } from 'rxjs/src/Subject'
 import { Observable } from 'rxjs/src/Observable'
+import { BehaviorSubject } from 'rxjs/src/BehaviorSubject'
 
 import 'rxjs/src/add/operator/do'
 import 'rxjs/src/add/operator/take'
@@ -15,7 +16,6 @@ type StoreData = any
 type StoreChangeMessage = { name: string, data: StoreData }
 
 type SubscriberFn = (data: StoreData) => void
-//type SubscriberField = { name: string, cb: SubscriberFn }
 class Subscribers extends Map {
   constructor() {
     super({})
@@ -34,7 +34,7 @@ class Subscribers extends Map {
 
 export class Store {
   private history$: State<StoreHistory> = new State<StoreHistory>([])
-  private changed$: Subject<StoreChangeMessage> = new Subject()
+  private latest$: BehaviorSubject<StoreState> = new BehaviorSubject({})
 
   updater$ = new Subject<StoreUpdate>()
   rollback$ = new Subject<void>()
@@ -53,8 +53,16 @@ export class Store {
         this.subscribers$.get$(name)
           .take(1)
           .subscribe((cb) => cb(prevVal))
+      })
 
-        this.changed$.next({ name, data: prevVal })
+    this.latest$.next(previousState)
+  }
+
+  dump() {
+    this.latest$.take(1).subscribe(
+      state => {
+        console.log('Current store state')
+        console.dir(state)
       })
   }
 
@@ -67,7 +75,7 @@ export class Store {
 
           newState[name] = data
 
-          this.changed$.next({ name, data })
+          this.latest$.next(newState)
 
           return [...history, newState]
 
@@ -122,9 +130,8 @@ export class Store {
   }
 
   select<T>(selection: string): Observable<T> {
-    return this.changed$
-      .filter(({ name, data }: StoreChangeMessage) => name == selection)
-      .map(({ name, data }: StoreChangeMessage) => data)
+    return this.latest$
+      .map((currentState: any): T => currentState[selection])
       .distinctUntilChanged()
   }
 

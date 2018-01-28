@@ -172,7 +172,7 @@ describe('Store tests', () => {
     expect(cb2).toHaveBeenCalledWith(undefined);
   })
 
-  it('As a USER, if I modify the store a update event is broadcasted to listeners', () => {
+  it('As a USER, if I modify the store, an update event is broadcasted to listeners', () => {
     const store = new Store()
 
     const cb1 = jasmine.createSpy('val1');
@@ -191,68 +191,73 @@ describe('Store tests', () => {
 
     expect(cb21).toHaveBeenCalledTimes(1)
     expect(cb21).toHaveBeenCalledWith(true)
+    console.log('test')
 
-    store.select('val1').subscribe(x => {
-      cbBroadcast1(x)
-    }, err => console.log("Error: " + err.message))
+    store.select('val1')
+      .do(x => console.log('test2'), err => console.log('test3'))
+      .subscribe(x => {
+        cbBroadcast1(x)
+      }, err => console.log("Error: " + err.message))
 
     store.select('val2').subscribe(x => {
       cbBroadcast2(x)
     }, err => console.log("Error: " + err.message))
-
-    store.update('val1', 1) //[{val1:1}]
     expect(cbBroadcast1).toHaveBeenCalledTimes(1);
+    expect(cbBroadcast1).toHaveBeenCalledWith(undefined);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(1);
+    expect(cbBroadcast2).toHaveBeenCalledWith(undefined);
+    store.update('val1', 1) //[{val1:1}]
+    expect(cbBroadcast1).toHaveBeenCalledTimes(2);
     expect(cbBroadcast1).toHaveBeenCalledWith(1);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(0);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(1);
 
     store.update('val1', 2) //[{val1:1},{val1:2}]
-    expect(cbBroadcast1).toHaveBeenCalledTimes(2);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(3);
     expect(cbBroadcast1).toHaveBeenCalledWith(2);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(0);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(1);
 
     store.update('val2', 0) //[{val1:1},{val1:2},{val1:2,val2:0}]
-    expect(cbBroadcast1).toHaveBeenCalledTimes(2);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(1);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(3);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(2);
     expect(cbBroadcast2).toHaveBeenCalledWith(0);
 
     store.update('val1', 3) //[{val1:1},{val1:2},{val1:2,val2:0},{val1:3}]
-    expect(cbBroadcast1).toHaveBeenCalledTimes(3);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(4);
     expect(cbBroadcast1).toHaveBeenCalledWith(3);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(1);
-
-    store.rollback()
-    expect(cbBroadcast1).toHaveBeenCalledTimes(4);
-    expect(cbBroadcast1).toHaveBeenCalledWith(2);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(1);
-    expect(cbBroadcast2).toHaveBeenCalledWith(0);
-
-    store.rollback()
-    expect(cbBroadcast1).toHaveBeenCalledTimes(4);
-    expect(cbBroadcast1).toHaveBeenCalledWith(2);
     expect(cbBroadcast2).toHaveBeenCalledTimes(2);
-    expect(cbBroadcast2).toHaveBeenCalledWith(undefined);
 
     store.rollback()
     expect(cbBroadcast1).toHaveBeenCalledTimes(5);
+    expect(cbBroadcast1).toHaveBeenCalledWith(2);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(2);
+    expect(cbBroadcast2).toHaveBeenCalledWith(0);
+
+    store.rollback()
+    expect(cbBroadcast1).toHaveBeenCalledTimes(5);
+    expect(cbBroadcast1).toHaveBeenCalledWith(2);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(3);
+    expect(cbBroadcast2).toHaveBeenCalledWith(undefined);
+
+    store.rollback()
+    expect(cbBroadcast1).toHaveBeenCalledTimes(6);
     expect(cbBroadcast1).toHaveBeenCalledWith(1);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(2);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(3);
     expect(cbBroadcast2).toHaveBeenCalledWith(undefined);
 
     store.rollback()
-    expect(cbBroadcast1).toHaveBeenCalledTimes(6);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(7);
     expect(cbBroadcast1).toHaveBeenCalledWith(undefined);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(2);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(3);
     expect(cbBroadcast2).toHaveBeenCalledWith(undefined);
 
     store.rollback()
-    expect(cbBroadcast1).toHaveBeenCalledTimes(6);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(7);
     expect(cbBroadcast1).toHaveBeenCalledWith(undefined);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(2);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(3);
     expect(cbBroadcast2).toHaveBeenCalledWith(undefined);
 
     expect(cb1).toHaveBeenCalledTimes(3)
     expect(cb2).toHaveBeenCalledTimes(1)
-
   })
 
   it('As a USER, I can empty a store', () => {
@@ -284,24 +289,24 @@ describe('Store tests', () => {
       cbBroadcast2(x)
     }, err => console.log("Error: " + err.message))
 
-    expect(cbBroadcast1).toHaveBeenCalledTimes(0);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(0);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(1);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(1);
 
     store.update('val1', 1) //[{val1:1}]
     store.update('val1', 2) //[{val1:1},{val1:2}]
     store.update('val2', 0) //[{val1:1},{val1:2},{val1:2,val2:0}]
     store.update('val1', 3) //[{val1:1},{val1:2},{val1:2,val2:0},{val1:3}]
 
-    expect(cbBroadcast1).toHaveBeenCalledTimes(3);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(4);
     expect(cbBroadcast1).toHaveBeenCalledWith(3);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(1);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(2);
     expect(cbBroadcast2).toHaveBeenCalledWith(0);
 
     store.flush()
 
-    expect(cbBroadcast1).toHaveBeenCalledTimes(4);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(5);
     expect(cbBroadcast1).toHaveBeenCalledWith(undefined);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(2);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(3);
     expect(cbBroadcast2).toHaveBeenCalledWith(undefined);
   })
 
@@ -338,22 +343,22 @@ describe('Store tests', () => {
     store.update('val2', 0) //[{val1:1},{val1:2},{val1:2,val2:0}]
     store.update('val1', 3) //[{val1:1},{val1:2},{val1:2,val2:0},{val1:3}]
 
-    expect(cbBroadcast1).toHaveBeenCalledTimes(3);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(4);
     expect(cbBroadcast1).toHaveBeenCalledWith(3);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(1);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(2);
     expect(cbBroadcast2).toHaveBeenCalledWith(0);
 
     store.commit()
-    expect(cbBroadcast1).toHaveBeenCalledTimes(3);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(4);
     expect(cbBroadcast1).toHaveBeenCalledWith(3);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(1);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(2);
     expect(cbBroadcast2).toHaveBeenCalledWith(0);
 
     store.rollback()
 
-    expect(cbBroadcast1).toHaveBeenCalledTimes(4);
+    expect(cbBroadcast1).toHaveBeenCalledTimes(5);
     expect(cbBroadcast1).toHaveBeenCalledWith(undefined);
-    expect(cbBroadcast2).toHaveBeenCalledTimes(2);
+    expect(cbBroadcast2).toHaveBeenCalledTimes(3);
     expect(cbBroadcast2).toHaveBeenCalledWith(undefined);
   })
 })
