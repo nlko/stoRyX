@@ -191,10 +191,8 @@ describe('Store tests', () => {
 
     expect(cb21).toHaveBeenCalledTimes(1)
     expect(cb21).toHaveBeenCalledWith(true)
-    console.log('test')
 
     store.select('val1')
-      .do(x => console.log('test2'), err => console.log('test3'))
       .subscribe(x => {
         cbBroadcast1(x)
       }, err => console.log("Error: " + err.message))
