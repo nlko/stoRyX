@@ -39,7 +39,7 @@ export class Map extends State<MapState> {
     .map(map => map[name])
     .distinctUntilChanged()
 
-  isSet$ = (name: string) => this.data$.asObservable().map(map => map[name] !== undefined).distinctUntilChanged()
+  isSet$ = (name: string) => this.data$.map(map => map[name] !== undefined).distinctUntilChanged()
 
   delete(name: string) {
     this.delete$.next(name)
