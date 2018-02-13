@@ -1,5 +1,6 @@
 import { Map } from './map'
 import 'rxjs/src/add/operator/take'
+import { hot, cold } from 'jasmine-marbles';
 
 describe('Map tests', () => {
   const map = new Map()
@@ -170,5 +171,12 @@ describe('Map tests', () => {
 
     expect(isSet1).toHaveBeenCalledTimes(2)
     expect(isSet1).toHaveBeenCalledWith(false)
+  })
+
+  it('As a USER, I can retrieve the number of element in a map.', () => {
+    map.set('smth1', 1)
+    map.set('smth2', 2)
+
+    expect(map.length$).toBeObservable(cold('a', { a: 2 }));
   })
 })

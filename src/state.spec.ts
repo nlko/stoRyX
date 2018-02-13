@@ -8,7 +8,7 @@ describe('State Tests', () => {
 
   it('As a USER, I must set a default valuet to a State', () => {
     const s = new State<number>(0)
-    expect(s.data$).toBeObservable(cold('a', { a: 0 }));
+    expect(s.obs$).toBeObservable(cold('a', { a: 0 }));
   })
 
   it('As a USER, I can update the value of a State.', () => {
@@ -24,7 +24,7 @@ describe('State Tests', () => {
     const isUpdate = jasmine.createSpy('Update obserable call');
 
     // ensure that the first value is the default one
-    s.data$.subscribe((val) => {
+    s.obs$.subscribe((val) => {
       isUpdate(val)
       expect(val).toBe(expected.shift());
     });

@@ -1,49 +1,73 @@
+import { Length } from './ifs'
 import { State } from './state'
 import { Informer } from './informer'
-import { uuidv4 } from './uuidv4'
 import { Observable } from 'rxjs/src/Observable'
 import 'rxjs/src/add/operator/map'
 
-export class List<T, ID=string> extends State<T[]>{
+/** A generic list of literal.
+ *
+ * The T type shall be a literal or an object.
+ *
+ * The list is indexed using a number like a normal list. If you need a list
+ * of object with a specialized function for creating an index in the object,
+ * you'd rather use @see ObjList
+ *
+ * The list inherit from the @see State object and can be subscribed to using
+ * the obs$ observable.
+ *
+ * @param T - The literal type of thing contained by the list instance.
+ */
+export class List<T> extends State<T[]> implements Length {
 
+  /** return a Cold Observable of the length */
   get length$(): Observable<number> {
-    return this.data$.map(x => x.length)
+    return this.obs$.map(x => x.length)
   }
 
-  constructor(initialContent: T[] = [], protected idField = "_id", private idGenerator = uuidv4) {
+  /**
+   * Example:
+   * --
+   * const myList<{name:string}>([{name:'Fred'}])
+   * myList.add({name:'Nicolas'})
+   * --
+   * @param initialContent - An array with the initial content of the list.
+   */
+  constructor(initialContent: T[] = []) {
     super(initialContent)
   }
 
-  remove(id: string | number): void {
-    if (typeof id == 'number')
-      this.update(state => { state.splice(id, 1); return state })
-    else
-      this.update(state => state.filter(c => c[this.idField] != id))
+  /** Remove an element using its position in the list
+   * @param position - The position index of the element to remove.
+   */
+  remove(position: number): void {
+    this.update(state => {
+      if (position >= 0 && position < state.length)
+        state.splice(position, 1);
+      return state
+    })
   }
 
-  add(element: T): Observable<number | string> {
-    const id = new Informer<number | string>()
-
-    if (typeof element == 'object' && element[this.idField] == undefined) {
-      element[this.idField] = this.idGenerator()
-    }
+  /** Add an element at the end of the list
+   * @param element - The element to append to the list.
+   * @return A cold observable containing the index of the added element in list.
+   */
+  add(element: T): Observable<number> {
+    const id = new Informer<number>()
 
     this.update(state => {
-      if (typeof element == 'object' && element[this.idField] != undefined) {
-        id.inform(element[this.idField])
-      } else {
-        id.inform(state.length)
-      }
+      id.inform(state.length)
       return [...state, element]
     })
 
     return id.obs$
   }
 
-  find(id: string | number): Observable<T> {
-    return this.data$.map((arr: T[]): T => {
-      if (typeof id == 'number') return arr[id]
-      else return arr.find(c => c[this.idField] == id)
-    })
+  /** retrieve the element value from the list according to its possition in
+   * the list.
+   * @param position - The position of the element to return
+   * @return A hot observable to the element.
+   */
+  find(id: number): Observable<T> {
+    return this.obs$.map((arr: T[]): T => { return arr[id] })
   }
 }
