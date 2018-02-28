@@ -1,12 +1,12 @@
 import { Map, MapData } from './map'
 import { State } from './state'
 
-import { Subject } from 'rxjs/src/Subject'
-import { Observable } from 'rxjs/src/Observable'
-import { BehaviorSubject } from 'rxjs/src/BehaviorSubject'
+import { Subject } from 'rxjs/Subject'
+import { Observable } from 'rxjs/Observable'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 
-import 'rxjs/src/add/operator/do'
-import 'rxjs/src/add/operator/take'
+import 'rxjs/add/operator/do'
+import 'rxjs/add/operator/take'
 
 
 type StoreUpdate = { name: string, data: StoreData }

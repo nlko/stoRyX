@@ -1,8 +1,8 @@
 import { Holder } from "./ifs";
-import { Subject } from 'rxjs/src/Subject'
-import { BehaviorSubject } from 'rxjs/src/BehaviorSubject'
-import { Observable } from 'rxjs/src/Observable'
-import 'rxjs/src/add/operator/scan'
+import { Subject } from 'rxjs/Subject'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { Observable } from 'rxjs/Observable'
+import 'rxjs/add/operator/scan'
 
 export class State<S> implements Holder<S>{
   private data$: Observable<S>

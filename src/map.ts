@@ -1,14 +1,14 @@
 import { State } from './state'
 import { Length } from './ifs'
-import { Subject } from 'rxjs/src/Subject'
-import { Observable } from 'rxjs/src/Observable'
-import 'rxjs/src/add/operator/map'
-import 'rxjs/src/add/operator/filter'
-import 'rxjs/src/add/operator/distinctUntilChanged'
+import { Subject } from 'rxjs/Subject'
+import { Observable } from 'rxjs/Observable'
+import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/filter'
+import 'rxjs/add/operator/distinctUntilChanged'
 
-type MapState = any
+export type MapState = any
 export type MapData = any
-type MapName = string
+export type MapName = string
 type MapSetMessage = { name: MapName, data: MapData }
 export class Map extends State<MapState> implements Length {
 

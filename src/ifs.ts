@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/src/Observable'
+import { Observable } from 'rxjs/Observable'
 
 export interface Holder<T> {
   readonly obs$: Observable<T>

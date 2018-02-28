@@ -1,9 +1,9 @@
 import { List } from './list'
 import { Informer } from './informer'
 import { uuidv4 } from './uuidv4'
-import { Observable } from 'rxjs/src/Observable'
-import 'rxjs/src/add/operator/map'
-import 'rxjs/src/add/observable/throw'
+import { Observable } from 'rxjs/Observable'
+import 'rxjs/add/operator/map'
+import 'rxjs/observable/throw'
 
 /** A generic list of anything
  *

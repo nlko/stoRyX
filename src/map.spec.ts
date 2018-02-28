@@ -1,5 +1,5 @@
 import { Map } from './map'
-import 'rxjs/src/add/operator/take'
+import 'rxjs/add/operator/take'
 import { hot, cold } from 'jasmine-marbles';
 
 describe('Map tests', () => {

@@ -1,8 +1,8 @@
 import { Length } from './ifs'
 import { State } from './state'
 import { Informer } from './informer'
-import { Observable } from 'rxjs/src/Observable'
-import 'rxjs/src/add/operator/map'
+import { Observable } from 'rxjs/Observable'
+import 'rxjs/add/operator/map'
 
 /** A generic list of literal.
  *
