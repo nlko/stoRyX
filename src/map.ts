@@ -38,7 +38,7 @@ export class Map extends State<MapState> implements Length {
     this.set$.next({ name, data })
   }
 
-  getOr$ = (defValue: any, $name: MapName) => this.obs$
+  getOr$ = (defValue: any, name: MapName) => this.obs$
     .map(map => map[name] !== undefined ? map[name] : defValue)
     .distinctUntilChanged()
 

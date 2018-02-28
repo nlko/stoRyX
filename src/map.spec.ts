@@ -30,7 +30,9 @@ describe('Map tests', () => {
     map.getOr$(undefined,'smth').subscribe(cb1)
     expect(cb1).toHaveBeenCalledTimes(2)
     expect(cb1).toHaveBeenCalledWith(undefined)
-
+    map.set('smth',2)
+    expect(cb1).toHaveBeenCalledTimes(4)
+    expect(cb1).toHaveBeenCalledWith(2)
   })
 
   it('As a USER, trying to test if a value exists (IsSet) on an empty Map resolve to false', () => {
