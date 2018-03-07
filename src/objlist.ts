@@ -1,6 +1,7 @@
 import { List } from './list'
 import { Informer } from './informer'
 import { uuidv4 } from './uuidv4'
+import { IContainerById } from './ifs'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/operator/map'
 import 'rxjs/observable/throw'
@@ -19,7 +20,9 @@ import 'rxjs/observable/throw'
  * @param T - The type of thing contained
  * @param ID - An optional id type to be use for object idexing (default string)
  */
-export class ObjList<T, ID=string> extends List<T>{
+export class ObjList<T, ID=string> extends List<T>
+  implements IContainerById<T, ID>
+{
   /**
    * Example:
    * --

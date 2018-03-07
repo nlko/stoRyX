@@ -17,7 +17,7 @@ describe('List Tests', () => {
     // Create the state
     const s = new List<number>(defaultValue)
 
-    s.add(1)
+    s.add$(1)
 
     expect(s.obs$).toBeObservable(cold('a', { a: [0, 1] }));
 
@@ -29,7 +29,7 @@ describe('List Tests', () => {
     // Create the state
     const s = new List<string>(defaultValue)
 
-    s.add('nico')
+    s.add$('nico')
 
     expect(s.obs$).toBeObservable(cold('a', { a: ['hello', 'nico'] }));
 
@@ -44,12 +44,12 @@ describe('List Tests', () => {
     // Create the state
     const s = new List<string>(defaultValue)
 
-    s.add('nico')
+    s.add$('nico')
 
     expect(s.obs$).toBeObservable(cold('a', { a: ['hello', 'nico'] }));
 
-    expect(s.find(0)).toBeObservable(cold('a', { a: 'hello' }));
-    expect(s.find(1)).toBeObservable(cold('a', { a: 'nico' }));
+    expect(s.get$(0)).toBeObservable(cold('a', { a: 'hello' }));
+    expect(s.get$(1)).toBeObservable(cold('a', { a: 'nico' }));
 
   })
 
@@ -59,7 +59,7 @@ describe('List Tests', () => {
     // Create the state
     const s = new List<string>(defaultValue)
 
-    s.add('nico')
+    s.add$('nico')
 
     expect(s.length$).toBeObservable(cold('a', { a: 2 }));
 

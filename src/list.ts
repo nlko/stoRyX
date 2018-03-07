@@ -1,6 +1,7 @@
 import { Length } from './ifs'
 import { State } from './state'
 import { Informer } from './informer'
+import { IContainer } from './ifs'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/operator/map'
 
@@ -17,7 +18,9 @@ import 'rxjs/add/operator/map'
  *
  * @param T - The literal type of thing contained by the list instance.
  */
-export class List<T> extends State<T[]> implements Length {
+export class List<T> extends State<T[]>
+  implements Length, IContainer<T>
+{
 
   /** return a Cold Observable of the length */
   get length$(): Observable<number> {
@@ -51,7 +54,7 @@ export class List<T> extends State<T[]> implements Length {
    * @param element - The element to append to the list.
    * @return A cold observable containing the index of the added element in list.
    */
-  add(element: T): Observable<number> {
+  add$(element: T): Observable<number> {
     const id = new Informer<number>()
 
     this.update(state => {
@@ -67,7 +70,7 @@ export class List<T> extends State<T[]> implements Length {
    * @param position - The position of the element to return
    * @return A hot observable to the element.
    */
-  find(id: number): Observable<T> {
+  get$(id: number): Observable<T> {
     return this.obs$.map((arr: T[]): T => { return arr[id] })
   }
 }
