@@ -10,6 +10,7 @@
     "build": "npm run build:dev",
     "build:dev": "webpack --config ./webpack.config.js --progress --profile --color --display-error-details --display-cached",
     "build:prod": "cross-env NODE_ENV=production webpack --config ./webpack.config.js  --progress --profile --color --display-error-details --display-cached --bail",
+    "doc": "./node_modules/.bin/typedoc --out ./doc src/*.ts --exclude \"src/**/*+(index|.spec|.e2e).ts\" --excludeExternals --externalPattern \"**/node_modules/**\" --ignoreCompilerErrors",
     "clean": "npm cache clear && rimraf -- dist",
     "test": "karma start"
   },
@@ -44,6 +45,7 @@
     "style-loader": "^0.18.2",
     "tslint": "^5.5.0",
     "tslint-loader": "^3.5.3",
+    "typedoc": "^0.11.1",
     "typescript": "^2.4.1",
     "webpack": "^3.3.0",
     "webpack-dashboard": "^0.4.0",
