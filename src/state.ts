@@ -4,25 +4,25 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/operator/scan'
 
+export type StateUpdateFn<S> = (s: S) => S
 export class State<S> implements Holder<S>{
   private data$: Observable<S>
   private currentState$: BehaviorSubject<S>
 
-  private _updater$: Subject<(s: S) => S>
-  public get updater$(): Subject<(s: S) => S> {
+  private _updater$: Subject<StateUpdateFn<S>>
+  public get updater$(): Subject<StateUpdateFn<S>> {
     return this._updater$
   }
 
   constructor(initialValue: S) {
-    type UpdateFn = (s: S) => S
-    this._updater$ = new Subject<UpdateFn>()
+    this._updater$ = new Subject<StateUpdateFn<S>>()
     this.currentState$ = new BehaviorSubject<S>(initialValue)
     this.data$ = this.currentState$.asObservable()
-    const dispatcher = (state: S, op: UpdateFn) => op(state)
+    const dispatcher = (state: S, op: StateUpdateFn<S>) => op(state)
     this._updater$.scan(dispatcher, initialValue).subscribe(this.currentState$)
   }
 
-  public update(fn: (s: S) => S) {
+  public update(fn: StateUpdateFn<S>): void {
     this._updater$.next((state: S) => fn(state))
   }
 
