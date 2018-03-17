@@ -1,5 +1,5 @@
 import { State } from './state'
-import { Length } from './ifs'
+import { ILength } from './ifs'
 import { Subject } from 'rxjs/Subject'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/operator/map'
@@ -9,8 +9,8 @@ import 'rxjs/add/operator/distinctUntilChanged'
 export type MapState = any
 export type MapData = any
 export type MapName = string
-type MapSetMessage = { name: MapName, data: MapData }
-export class Map extends State<MapState> implements Length {
+export type MapSetMessage = { name: MapName, data: MapData }
+export class Map extends State<MapState> implements ILength {
 
   /** return an Observable of the length */
   get length$(): Observable<number> {

@@ -1,11 +1,11 @@
-import { Holder } from "./ifs";
+import { IHolder } from "./ifs";
 import { Subject } from 'rxjs/Subject'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/operator/scan'
 
 export type StateUpdateFn<S> = (s: S) => S
-export class State<S> implements Holder<S>{
+export class State<S> implements IHolder<S> {
   readonly obs$: Observable<S>
   private currentState$: BehaviorSubject<S>
 

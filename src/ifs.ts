@@ -1,10 +1,24 @@
 import { Observable } from 'rxjs/Observable'
 
-export interface Holder<T> {
+/** An interface that enforce object holding.
+ *
+ * It specifies that any object compliant with the Holder interface have to provide
+ * a way to retrieve a value.
+ *
+ * @param T - The of holded value.
+ */
+export interface IHolder<T> {
+  /** an observable on an object of type T
+   */
   readonly obs$: Observable<T>
 }
 
-export interface Length {
+/** An interface that enforce the return of lenght
+ *
+ * This interface specifies the common behavior when it comes to return a length
+ */
+export interface ILength {
+  /** Return an observable of the length */
   readonly length$: Observable<number>
 }
 

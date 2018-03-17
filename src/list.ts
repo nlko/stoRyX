@@ -1,4 +1,4 @@
-import { Length } from './ifs'
+import { ILength } from './ifs'
 import { State } from './state'
 import { Informer } from './informer'
 import { IContainer } from './ifs'
@@ -19,8 +19,7 @@ import 'rxjs/add/operator/map'
  * @param T - The literal type of thing contained by the list instance.
  */
 export class List<T> extends State<T[]>
-  implements Length, IContainer<T>
-{
+  implements ILength, IContainer<T> {
 
   /** return a Cold Observable of the length */
   get length$(): Observable<number> {
