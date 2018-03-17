@@ -23,23 +23,20 @@ import { Observable } from 'rxjs/Observable'
  *
  * @param T the object type returned
  */
-export class Informer<T> implements Holder<T>{
-  private sub$ = new AsyncSubject<T>()
-
 export class Informer<T> extends AsyncSubject<T> implements Holder<T> {
   /** Method to call once to set the value when its known.
    * This method will complete the informer object
    * @param val - Value to set.
    */
   public inform(val: T): void {
-    this.sub$.next(val)
-    this.sub$.complete()
+    this.next(val)
+    this.complete()
   }
 
   /** Method to retrieve the observable to wait on for obtaining the value
    * @return A cold observable on the value.
    */
   public get obs$(): Observable<T> {
-    return this.sub$.asObservable()
+    return this.asObservable()
   }
 }
