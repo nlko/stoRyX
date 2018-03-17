@@ -10,7 +10,7 @@ export class State<S> implements Holder<S>{
   private currentState$: BehaviorSubject<S>
 
   private _updater$: Subject<StateUpdateFn<S>>
-  public get updater$(): Subject<StateUpdateFn<S>> {
+  public get updater$s(): Subject<StateUpdateFn<S>> {
     return this._updater$
   }
 

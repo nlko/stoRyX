@@ -21,7 +21,7 @@ class Subscribers extends Map {
     super({})
   }
 
-  register = <T extends {}>(name: string, cb: (state: T) => void): Observable<boolean> =>
+  register$1 = <T extends {}>(name: string, cb: (state: T) => void): Observable<boolean> =>
     this.isSet$(name)
       .take(1) // return the current state
       .map(isSet => !isSet) // what will be done
@@ -30,35 +30,38 @@ class Subscribers extends Map {
           this.set(name, cb)
         }
       })
-}
 
+  unregister = this.delete
+}
 export class Store {
-  private history$: State<StoreHistory> = new State<StoreHistory>([])
+  private history: State<StoreHistory> = new State<StoreHistory>([])
   private latest$: BehaviorSubject<StoreState> = new BehaviorSubject({})
 
   updater$ = new Subject<StoreUpdate>()
   rollback$ = new Subject<void>()
-  flush$ = new Subject<void>()
+  updater$s = new Subject<StoreUpdate>()
   commit$ = new Subject<void>()
 
-  private subscribers$ = new Subscribers()
+  rollback$s = new Subject<void>()
 
-  private informs(names: string[], previousState: StoreState, currentState: StoreState) {
-    //For each backed object
+  flush$s = new Subject<void>()
+  commit$s = new Subject<void>()
+  private storeStateUpdate(names: string[], previousState: StoreState, currentState: StoreState): void {
+    // For each backed object
     names
       .map((name: string) => ({ name, prevVal: previousState[name] }))
       .filter(({ name, prevVal }) => currentState[name] !== prevVal)
       .forEach(({ name, prevVal }) => {
-        //Inform the subscribers of the state change
-        this.subscribers$.get$(name)
+        // Inform the subscribers of the state change
+        this.subscribers.get$(name)
           .take(1)
-          .subscribe((cb) => cb(prevVal))
+          .subscribe((cb: any) => cb(prevVal))
       })
 
     this.latest$.next(previousState)
   }
 
-  dump() {
+  dump(): void {
     this.latest$.take(1).subscribe(
       state => {
         console.log('Current store state')
@@ -67,7 +70,7 @@ export class Store {
   }
 
   constructor() {
-    this.updater$.map(
+    this.updater$s.map(
       ({ name, data }: StoreUpdate) =>
         (history: StoreHistory) => {
           const newState =
@@ -79,9 +82,9 @@ export class Store {
 
           return [...history, newState]
 
-        }).subscribe(this.history$.updater$)
+        }).subscribe(this.history.updater$s)
 
-    this.rollback$.map(() => {
+    this.rollback$s.map(() => {
       return (history: StoreHistory) => {
         const currentState = history.pop()
 
@@ -89,66 +92,68 @@ export class Store {
         if (currentState) {
           const previousState = history.length ? history[history.length - 1] : {}
 
-          this.informs(Object.keys(currentState), previousState, currentState /*? currentState : {}*/)
+          this.storeStateUpdate(Object.keys(currentState), previousState, currentState /*? currentState : {}*/)
         }
 
         return history
       }
-    }).subscribe(this.history$.updater$)
+    }).subscribe(this.history.updater$s)
 
-    this.flush$.map(() => {
+    this.flush$s.map(() => {
       return (history: StoreHistory) => {
 
-        const currentState = history.pop()
+        const currentState = history.length ? history[history.length - 1] : undefined
 
         //If there is a current state
         if (currentState) {
-          this.informs(Object.keys(currentState), {}, currentState)
+          this.storeStateUpdate(Object.keys(currentState), currentState, {})
         }
 
         return []
       }
-    }).subscribe(this.history$.updater$)
+    }).subscribe(this.history.updater$s)
 
-    this.commit$.map(() => {
+    this.commit$s.map(() => {
+      // need to return a function that can return an array that contains
+      // the last element of an array (of history)
       return (history: StoreHistory) => {
-        return history.splice(-1, 1)
+        return history.splice(-1, 1) // only keep the last element
       }
-    }).subscribe(this.history$.updater$)
+    }).subscribe(this.history.updater$s) // udpate the history
   }
 
-  register<T>(name: string, cb: (state: T) => void): Observable<boolean> {
-    return this.subscribers$.register(name, cb)
+  register$1<T>(name: string, cb: (data: T) => void): Observable<boolean> {
+    return this.subscribers.register$1(name, cb)
   }
 
-  unregister(name: string) {
-    this.subscribers$.delete(name)
+  unregister(name: string): void {
+    this.subscribers.unregister(name)
   }
 
-  update<T>(name: string, data: T) {
-    this.updater$.next({ name, data })
+  update<T>(name: string, data: T): void {
+    this.updater$s.next({ name, data })
   }
 
-  select<T>(selection: string): Observable<T> {
+  select$<T>(name: string): Observable<T> {
     return this.latest$
-      .map((currentState: any): T => currentState[selection])
+      .map((currentState: any): T => currentState[name])
       .distinctUntilChanged()
   }
 
-  rollback() {
-    this.rollback$.next()
+  rollback(): void {
+    this.rollback$s.next()
   }
 
-  flush() {
-    this.flush$.next()
+  flush(): void {
+    this.flush$s.next()
   }
 
-  commit() {
-    this.commit$.next()
+  commit(): void {
+    this.commit$s.next()
   }
 
-  reset() {
-    this.subscribers$.flush()
+  reset(): void {
+    this.subscribers.flush()
     this.flush()
   }
 }

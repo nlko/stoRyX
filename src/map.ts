@@ -17,43 +17,43 @@ export class Map extends State<MapState> implements Length {
     return this.obs$.map(x => Object.keys(x).length)
   }
 
-  set$ = new Subject<MapSetMessage>()
-  delete$ = new Subject<string>()
+  set$s = new Subject<MapSetMessage>()
+  delete$s = new Subject<string>()
 
   constructor(initialValue: MapState = {}) {
     super(initialValue)
 
-    this.set$.map(({ name, data }: MapSetMessage) => (state: MapState) => {
+    this.set$s.map(({ name, data }: MapSetMessage) => (state: MapState) => {
       state[name] = data
       return state
-    }).subscribe(this.updater$)
+    }).subscribe(this.updater$s)
 
-    this.delete$.map((name: MapName) => (state: MapState) => {
+    this.delete$s.map((name: MapName) => (state: MapState) => {
       delete state[name]
       return state
-    }).subscribe(this.updater$)
+    }).subscribe(this.updater$s)
   }
 
-  set(name: MapName, data: any) {
-    this.set$.next({ name, data })
+  set(name: MapName, data: any): void {
+    this.set$s.next({ name, data })
   }
 
-  getOr$ = (defValue: any, name: MapName) => this.obs$
+  getOr$ = (defValue: any, name: MapName): MapData => this.obs$
     .map(map => map[name] !== undefined ? map[name] : defValue)
     .distinctUntilChanged()
 
-  get$ = (name: MapName) => this.obs$
+  get$ = (name: MapName): MapData => this.obs$
     .filter(map => map[name] !== undefined)
     .map(map => map[name])
     .distinctUntilChanged()
 
-  isSet$ = (name: MapName) => this.obs$.map(map => map[name] !== undefined).distinctUntilChanged()
+  isSet$ = (name: MapName): Observable<Boolean> => this.obs$.map(map => map[name] !== undefined).distinctUntilChanged()
 
-  delete(name: MapName) {
-    this.delete$.next(name)
+  delete(name: MapName): void {
+    this.delete$s.next(name)
   }
 
-  flush() {
-    this.updater$.next(_ => ({}))
+  flush(): void {
+    this.updater$s.next(_ => ({}))
   }
 }

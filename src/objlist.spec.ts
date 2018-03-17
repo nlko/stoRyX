@@ -19,7 +19,7 @@ describe('ObjList Tests', () => {
     // Create the state
     const s = new ObjList<number>(defaultValue)
 
-    s.add(1)
+    s.add$(1)
 
     expect(s.obs$).toBeObservable(cold('a', { a: [0, 1] }));
 
@@ -33,11 +33,11 @@ describe('ObjList Tests', () => {
     // Create the state
     const s = new ObjList<T>(defaultValue, 'ID', (): string => '' + i++)
 
-    s.add({ a: 'nico1' })
+    s.add$({ a: 'nico1' })
 
     expect(s.obs$).toBeObservable(cold('a', { a: [{ a: 'nico1', ID: '100' }] }));
 
-    s.add({ a: 'nico2' }).subscribe(
+    s.add$({ a: 'nico2' }).subscribe(
       id => {
         expect(id).toBe(1)
         expect(s.obs$).toBeObservable(cold('a', { a: [{ a: 'nico1', ID: '100' }, { a: 'nico2', ID: '101' }] }));
@@ -58,14 +58,14 @@ describe('ObjList Tests', () => {
     // Create the state
     const s = new ObjList<T>(defaultValue, 'ID', (): string => '' + i++)
 
-    s.add({ a: 'nico1' })
+    s.add$({ a: 'nico1' })
 
     expect(s.obs$).toBeObservable(cold('a', { a: [{ a: 'nico1', ID: '100' }] }));
 
-    s.add({ a: 'nico2' }).subscribe(id => {
+    s.add$({ a: 'nico2' }).subscribe(id => {
       expect(s.obs$).toBeObservable(cold('a', { a: [{ a: 'nico1', ID: '100' }, { a: 'nico2', ID: '101' }] }));
 
-      expect(s.findById("101")).toBeObservable(cold('a', { a: { a: 'nico2', ID: '101' } }));
+      expect(s.findById$("101")).toBeObservable(cold('a', { a: { a: 'nico2', ID: '101' } }));
     })
   })
 })

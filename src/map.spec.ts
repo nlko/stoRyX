@@ -24,13 +24,13 @@ describe('Map tests', () => {
   it('As a USER, geting with a default value on an empty Map never returns the default value', () => {
     const cb1 = jasmine.createSpy('optional name');
 
-    map.getOr$(1,'smth').subscribe(cb1)
+    map.getOr$(1, 'smth').subscribe(cb1)
     expect(cb1).toHaveBeenCalledTimes(1)
     expect(cb1).toHaveBeenCalledWith(1)
-    map.getOr$(undefined,'smth').subscribe(cb1)
+    map.getOr$(undefined, 'smth').subscribe(cb1)
     expect(cb1).toHaveBeenCalledTimes(2)
     expect(cb1).toHaveBeenCalledWith(undefined)
-    map.set('smth',2)
+    map.set('smth', 2)
     expect(cb1).toHaveBeenCalledTimes(4)
     expect(cb1).toHaveBeenCalledWith(2)
   })
@@ -86,7 +86,7 @@ describe('Map tests', () => {
     expect(isSet1).toHaveBeenCalledTimes(1)
     expect(isSet1).toHaveBeenCalledWith(1)
 
-    map.set$.next({ name: 'smth', data: 2 })
+    map.set$s.next({ name: 'smth', data: 2 })
     map.get$('smth').subscribe(isSet2)
     expect(isSet1).toHaveBeenCalledTimes(2)
     expect(isSet1).toHaveBeenCalledWith(2)
@@ -102,7 +102,7 @@ describe('Map tests', () => {
 
     map.set('smth', 1)
 
-    map.set$.next({ name: 'smth', data: 2 })
+    map.set$s.next({ name: 'smth', data: 2 })
 
     expect(isSet1).toHaveBeenCalledTimes(2)
     expect(isSet1).toHaveBeenCalledWith(2)
@@ -112,7 +112,7 @@ describe('Map tests', () => {
     expect(isSet2).toHaveBeenCalledTimes(1)
     expect(isSet2).toHaveBeenCalledWith(2)
 
-    map.set$.next({ name: 'smth', data: 2 })
+    map.set$s.next({ name: 'smth', data: 2 })
 
     expect(isSet1).toHaveBeenCalledTimes(2)
     expect(isSet1).toHaveBeenCalledWith(2)
@@ -140,7 +140,7 @@ describe('Map tests', () => {
 
     const vals = [1, 2]
 
-    map.get$('smth').subscribe(val => {
+    map.get$('smth').subscribe((val: any) => {
       isSet1(val)
       if (vals.length)
         expect(val).toBe(vals.shift())

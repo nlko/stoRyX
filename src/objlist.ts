@@ -50,17 +50,17 @@ export class ObjList<T, ID=string> extends List<T>
     }
   }
 
-  add(element: T): Observable<number> {
+  add$(element: T): Observable<number> {
     const id = new Informer<number>()
 
     if (typeof element == 'object' && element[this.idField] == undefined) {
       element[this.idField] = this.idGenerator()
     }
 
-    return super.add(element)
+    return super.add$(element)
   }
 
-  findById(id: ID): Observable<T> {
+  findById$(id: ID): Observable<T> {
     if (typeof (<T>null) == 'object' && this.idField != undefined) {
       return this.obs$.map((arr: T[]): T => {
         return arr.find(c => c[this.idField] == id)
