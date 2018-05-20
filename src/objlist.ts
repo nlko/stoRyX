@@ -43,8 +43,8 @@ export class ObjList<T, ID=string> extends List<T>
    */
 
   removeById(id: ID): void {
-    if (typeof (<T>null) == 'object' && this.idField != undefined)
-      this.update(state => state.filter(c => c[this.idField] != id))
+    if (typeof (<T>null) === 'object' && this.idField !== undefined)
+      this.update(state => state.filter(c => c[this.idField] !== id))
     else {
       throw ('Invalid call to removeById on list of literal object or object without id field')
     }
@@ -53,7 +53,7 @@ export class ObjList<T, ID=string> extends List<T>
   add$(element: T): Observable<number> {
     const id = new Informer<number>()
 
-    if (typeof element == 'object' && element[this.idField] == undefined) {
+    if (typeof element === 'object' && element[this.idField] === undefined) {
       element[this.idField] = this.idGenerator()
     }
 
@@ -61,9 +61,9 @@ export class ObjList<T, ID=string> extends List<T>
   }
 
   findById$(id: ID): Observable<T> {
-    if (typeof (<T>null) == 'object' && this.idField != undefined) {
+    if (typeof (<T>null) === 'object' && this.idField !== undefined) {
       return this.obs$.map((arr: T[]): T => {
-        return arr.find(c => c[this.idField] == id)
+        return arr.find(c => c[this.idField] === id)
       })
     }
     else {
