@@ -25,10 +25,10 @@ export class ObjList<T, ID=string> extends List<T>
 {
   /**
    * Example:
-   * --
+   * ```
    * const myList<{name:string,id:string}>([],"id")
-   * myList.add({name:'Nicolas'})
-   * --
+   * myList.add$({name:'Nicolas'})
+   * ```
    * @param initialContent - An array with the initial content of the list.
    * @param idField - The field containing the object identification.
    * @param idGenerator - A function that returns an id of the type compatible with ID.
@@ -41,7 +41,6 @@ export class ObjList<T, ID=string> extends List<T>
    * The element shall be an object, and the list be created with a proper idField
    * @param id - The id of the element to remove.
    */
-
   removeById(id: ID): void {
     if (typeof (<T>null) === 'object' && this.idField !== undefined)
       this.update(state => state.filter(c => c[this.idField] !== id))

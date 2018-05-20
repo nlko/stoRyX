@@ -7,38 +7,44 @@ import 'rxjs/add/operator/map'
 
 /** A generic list of literal.
  *
- * The T type shall be a literal or an object.
+ * The T type that describe the type of data in the list shall be a literal.
  *
  * The list is indexed using a number like a normal list. If you need a list
  * of object with a specialized function for creating an index in the object,
- * you'd rather use @see ObjList
+ * you'd rather use [[ObjList]] instead.
  *
- * The list inherit from the @see State object and can be subscribed to using
- * the obs$ observable.
+ * The list inherit from the [[State]] object. It can be subscribed to using
+ * the obs$ attribute and other method or attribute can be used (like update
+ * method).
  *
- * @param T - The literal type of thing contained by the list instance.
+ * @param T - The literal type of the data contained by the list instance.
  */
 export class List<T> extends State<T[]>
   implements ILength, IContainer<T> {
 
-  /** return a Cold Observable of the length */
+  /** Retrieve the number of element in the list.
+   * @return An Observable on the number of elements.
+   */
   get length$(): Observable<number> {
     return this.obs$.map(x => x.length)
   }
 
   /**
    * Example:
-   * --
-   * const myList<{name:string}>([{name:'Fred'}])
-   * myList.add({name:'Nicolas'})
-   * --
+   *
+   * This example will create a list of object that contains at start one name
+   * and to which a second name is append.
+   * ```
+   * const myList<string>(['Fred'])
+   * myList.add('Nicolas')
+   * ```
    * @param initialContent - An array with the initial content of the list.
    */
   constructor(initialContent: T[] = []) {
     super(initialContent)
   }
 
-  /** Remove an element using its position in the list
+  /** Remove an element using its position in the list.
    * @param position - The position index of the element to remove.
    */
   remove(position: number): void {
@@ -49,9 +55,10 @@ export class List<T> extends State<T[]>
     })
   }
 
-  /** Add an element at the end of the list
+  /** Add an element at the end of the list.
    * @param element - The element to append to the list.
-   * @return A cold observable containing the index of the added element in list.
+   * @return A cold observable containing the index of the added element in
+   * the list.
    */
   add$(element: T): Observable<number> {
     const id = new Informer<number>()
@@ -64,7 +71,7 @@ export class List<T> extends State<T[]>
     return id.obs$
   }
 
-  /** retrieve the element value from the list according to its possition in
+  /** Retrieve the element value from the list according to its possition in
    * the list.
    * @param position - The position of the element to return
    * @return A hot observable to the element.
