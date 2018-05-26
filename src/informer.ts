@@ -1,4 +1,4 @@
-import { Holder } from './ifs'
+import { IHolder } from './ifs'
 import { AsyncSubject } from 'rxjs/AsyncSubject'
 import { Observable } from 'rxjs/Observable'
 
@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable'
  *
  * Let say that the following method have to return an observable (because
  * of the interface of the class). But the value returned by the observable
- * isn't known yet. One can use the Informer to complete completed asyncronously
+ * isn't known yet. One can use the Informer to complete the observable asyncronously
  * using the `inform` method (setTimeOut is used to emulate this asyncronous
  * behaviors).
  *
@@ -23,7 +23,7 @@ import { Observable } from 'rxjs/Observable'
  *
  * @param T the object type returned
  */
-export class Informer<T> extends AsyncSubject<T> implements Holder<T> {
+export class Informer<T> extends AsyncSubject<T> implements IHolder<T> {
   /** Method to call once to set the value when its known.
    * This method will complete the informer object
    * @param val - Value to set.
