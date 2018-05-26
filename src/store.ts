@@ -154,7 +154,7 @@ export class Store {
       return (history: StoreHistory) => {
         const currentState = history.pop()
 
-        //If there is a current state
+        // If there is a current state
         if (currentState) {
           const previousState = history.length ? history[history.length - 1] : {}
 
@@ -170,7 +170,7 @@ export class Store {
 
         const currentState = history.length ? history[history.length - 1] : undefined
 
-        //If there is a current state
+        // If there is a current state
         if (currentState) {
           this.storeStateUpdate(Object.keys(currentState), currentState, {})
         }

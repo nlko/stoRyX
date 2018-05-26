@@ -20,9 +20,8 @@ import 'rxjs/observable/throw'
  * @param T - The type of thing contained
  * @param ID - An optional id type to be use for object idexing (default string)
  */
-export class ObjList<T, ID=string> extends List<T>
-  implements IContainerById<T, ID>
-{
+export class ObjList<T, ID = string> extends List<T>
+  implements IContainerById<T, ID> {
   /**
    * Example:
    * ```

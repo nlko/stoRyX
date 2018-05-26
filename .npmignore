@@ -1,6 +1,7 @@
 # Build results
 dist/
 typings/**/*
+tests/
 
 # Others
 ~$*
@@ -8,3 +9,5 @@ typings/**/*
 node_modules/
 src/build/
 coverage/
+*.js
+.gitlab-ci.yml

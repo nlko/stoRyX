@@ -1,6 +1,9 @@
 {
   "name": "storyx",
-  "version": "0.0.2",
+  "version": "1.0.0",
+  "homepage": "https://github.com/nlko/stoRyX",
+  "repository" : { "type" : "git", "url" : "https://github.com/nlko/stoRyX.git" },
+  "author": { "name" : "nlko", "url" : "httpi://github.com/nlko" },
   "main": "src/index.ts",
   "scripts": {
     "start": "npm run server:dev",
