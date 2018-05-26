@@ -22,6 +22,9 @@ export interface ILength {
   readonly length$: Observable<number>
 }
 
+/** Interface for a iterative container
+ * @param T - Contained data type.
+ */
 export interface IContainer<T> {
   /** Retrieve the element value from the list according to its possition in
    * the list.
@@ -42,8 +45,19 @@ export interface IContainer<T> {
   add$(element: T): Observable<number>
 }
 
+/** Interface for containers having specific ways for idendifying data
+ * @param T - Contained data type.
+ * @param ID - Type used to identify a element in the container.
+ */
 export interface IContainerById<T, ID> extends IContainer<T> {
+  /** Remove an element from a container according to its ID
+   * @param id - Id of the element to remove.
+   */
   removeById(id: ID): void
 
+  /** Find an element in a container according to its ID
+   * @param id - Id of the element to find.
+   * @return an observable on the element found.
+   */
   findById$(id: ID): Observable<T>
 }
