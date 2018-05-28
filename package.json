@@ -38,7 +38,6 @@
     "codelyzer": "^4.0.1",
     "cross-env": "^5.0.1",
     "css-loader": "^0.28.4",
-    "ejs-loader": "^0.3.0",
     "eslint": "^4.2.0",
     "expose-loader": "^0.7.3",
     "html-loader": "^0.4.5",
@@ -46,7 +45,7 @@
     "jasmine": "^2.6.0",
     "jasmine-core": "^2.6.4",
     "jasmine-marbles": "^0.2.0",
-    "karma": "^1.7.1",
+    "karma": "^2.0.2",
     "karma-babel-preprocessor": "^6.0.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
@@ -66,7 +65,7 @@
     "typedoc": "^0.11.1",
     "typescript": "^2.7",
     "webpack": "^3.3.0",
-    "webpack-dashboard": "^0.4.0",
+    "webpack-dashboard": "^2.0.0",
     "webpack-dev-server": "2.5.1"
   },
   "peerDependencies": {
