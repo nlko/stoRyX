@@ -2,8 +2,8 @@ import { ILength } from './ifs'
 import { State } from './state'
 import { Informer } from './informer'
 import { IContainer } from './ifs'
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/operator/map'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 /** A generic list of literal.
  *
@@ -26,7 +26,7 @@ export class List<T> extends State<T[]>
    * @return An Observable on the number of elements.
    */
   get length$(): Observable<number> {
-    return this.obs$.map(x => x.length)
+    return this.obs$.pipe(map(x => x.length))
   }
 
   /**
@@ -77,6 +77,6 @@ export class List<T> extends State<T[]>
    * @return A hot observable to the element.
    */
   get$(id: number): Observable<T> {
-    return this.obs$.map((arr: T[]): T => { return arr[id] })
+    return this.obs$.pipe(map((arr: T[]): T => { return arr[id] }))
   }
 }

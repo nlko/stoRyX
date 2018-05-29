@@ -1,6 +1,5 @@
 import { IHolder } from './ifs'
-import { AsyncSubject } from 'rxjs/AsyncSubject'
-import { Observable } from 'rxjs/Observable'
+import { Observable, AsyncSubject } from 'rxjs'
 
 /** A small class to use when it is needed to return an asyncronous information.
  * (it's just a wrapper around AsyncSubject)

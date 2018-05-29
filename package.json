@@ -1,6 +1,6 @@
 {
   "name": "storyx",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "homepage": "https://github.com/nlko/stoRyX",
   "repository": {
     "type": "git",
@@ -44,7 +44,7 @@
     "html-webpack-plugin": "^2.29.0",
     "jasmine": "^2.6.0",
     "jasmine-core": "^2.6.4",
-    "jasmine-marbles": "^0.2.0",
+    "jasmine-marbles": "^0.3.1",
     "karma": "^2.0.2",
     "karma-babel-preprocessor": "^6.0.1",
     "karma-chrome-launcher": "^2.2.0",
@@ -69,6 +69,9 @@
     "webpack-dev-server": "2.5.1"
   },
   "peerDependencies": {
-    "rxjs": "^5.5.6"
+    "rxjs": "^6.0.0"
+  },
+  "dependencies": {
+    "rxjs": "^6.0.0"
   }
 }

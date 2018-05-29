@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable'
+import { Observable } from 'rxjs'
 
 /** An interface that enforce object holding.
  *

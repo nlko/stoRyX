@@ -1,10 +1,7 @@
 import { State } from './state'
 import { ILength } from './ifs'
-import { Subject } from 'rxjs/Subject'
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/filter'
-import 'rxjs/add/operator/distinctUntilChanged'
+import { Observable, Subject } from 'rxjs'
+import { map, filter, distinctUntilChanged } from 'rxjs/operators'
 
 /** Type of data describing a [[Map]]. */
 export type MapState = any
@@ -35,7 +32,7 @@ export class Map extends State<MapState> implements ILength {
 
   /** return an Observable of the length */
   get length$(): Observable<number> {
-    return this.obs$.map(x => Object.keys(x).length)
+    return this.obs$.pipe(map(x => Object.keys(x).length))
   }
 
   /** Subject that can be used to set a new element value by sending a
@@ -61,15 +58,15 @@ export class Map extends State<MapState> implements ILength {
   constructor(initialValue: MapState = {}) {
     super(initialValue)
 
-    this.set$s.map(({ name, data }: MapSetMessage) => (state: MapState) => {
+    this.set$s.pipe(map(({ name, data }: MapSetMessage) => (state: MapState) => {
       state[name] = data
       return state
-    }).subscribe(this.updater$s)
+    })).subscribe(this.updater$s)
 
-    this.delete$s.map((name: MapName) => (state: MapState) => {
+    this.delete$s.pipe(map((name: MapName) => (state: MapState) => {
       delete state[name]
       return state
-    }).subscribe(this.updater$s)
+    })).subscribe(this.updater$s)
   }
 
   /** Set an element value
@@ -88,26 +85,29 @@ export class Map extends State<MapState> implements ILength {
    * @param name - key of the data to retrieve
    * @return an observable on the data found.
    */
-  getOr$ = (defValue: MapData, name: MapName): MapData => this.obs$
-    .map(map => map[name] !== undefined ? map[name] : defValue)
-    .distinctUntilChanged()
+  getOr$ = (defValue: MapData, name: MapName): MapData => this.obs$.pipe(
+    map(map => map[name] !== undefined ? map[name] : defValue),
+    distinctUntilChanged()
+  )
 
   /** retrieve an element.
    * This function tries to return the value associated to the name key
    * @param name - key of the data to retrieve
    **/
-  get$ = (name: MapName): MapData => this.obs$
-    .filter(map => map[name] !== undefined)
-    .map(map => map[name])
-    .distinctUntilChanged()
+  get$ = (name: MapName): MapData => this.obs$.pipe(
+    filter(map => map[name] !== undefined),
+    map(map => map[name]),
+    distinctUntilChanged()
+  )
 
   /** check if an element exist.
    * @param name - key of the data to check
    * @return an boolean observable indicating whetever the element exists or not.
    */
-  isSet$ = (name: MapName): Observable<Boolean> => this.obs$
-    .map(map => map[name] !== undefined)
-    .distinctUntilChanged()
+  isSet$ = (name: MapName): Observable<Boolean> => this.obs$.pipe(
+    map(map => map[name] !== undefined),
+    distinctUntilChanged()
+  )
 
   /** remove an element from the map.
    * @param name - key of the data todelete
@@ -119,6 +119,6 @@ export class Map extends State<MapState> implements ILength {
   /** remove all element from the map.
    */
   flush(): void {
-    this.updater$s.next(_ => ({}))
+    this.updater$s.next((_: any) => ({}))
   }
 }

@@ -1,8 +1,6 @@
 import { IHolder } from "./ifs";
-import { Subject } from 'rxjs/Subject'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/operator/scan'
+import { Observable, Subject, BehaviorSubject } from 'rxjs'
+import { scan } from 'rxjs/operators'
 
 /** Type of the transformation functions that can be used to update a [[State]]
  * object.
@@ -77,7 +75,7 @@ export class State<S> implements IHolder<S> {
     this.currentState$ = new BehaviorSubject<S>(initialValue)
     this.obs$ = this.currentState$.asObservable()
     const dispatcher = (state: S, op: StateUpdateFn<S>) => op(state)
-    this._updater$.scan(dispatcher, initialValue).subscribe(this.currentState$)
+    this._updater$.pipe(scan(dispatcher, initialValue)).subscribe(this.currentState$)
   }
 
   /** Method to be used to update the content.

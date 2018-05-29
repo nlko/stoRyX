@@ -25,6 +25,9 @@ I want to keep it simple (even if I'm a big fan of ramdajs and sanctuaryjs), so 
 * [[Store]] - A store that supports rollback.
 
 ## Installation
+
+**Since version 2.0.0, this library use RxJS V6. (v1.0.1 is the latest version using RxJS v5)**
+
 `npm i --save storyx`
 or
 `yarn add storyx`

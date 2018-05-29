@@ -1,12 +1,7 @@
 import { Map, MapData } from './map'
 import { State } from './state'
-
-import { Subject } from 'rxjs/Subject'
-import { Observable } from 'rxjs/Observable'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
-
-import 'rxjs/add/operator/do'
-import 'rxjs/add/operator/take'
+import { Observable, Subject, BehaviorSubject } from 'rxjs'
+import { tap, take, map, distinctUntilChanged } from 'rxjs/operators'
 
 // type used for updating a data in the store
 type StoreUpdate = { name: string, data: StoreData }
@@ -27,14 +22,16 @@ class Subscribers extends Map {
   }
 
   register$1 = <T extends {}>(name: string, cb: (state: T) => void): Observable<boolean> =>
-    this.isSet$(name)
-      .take(1) // return the current state
-      .map(isSet => !isSet) // what will be done
-      .do(whatToDo => {
+    this.isSet$(name).pipe(
+      take(1), // return the current state
+      map(isSet => !isSet), // what will be done
+      tap(whatToDo => {
         if (whatToDo) { // Just do it
           this.set(name, cb)
         }
       })
+    )
+
 
   unregister = this.delete
 }
@@ -106,9 +103,9 @@ export class Store {
       .filter(({ name, prevVal }) => currentState[name] !== prevVal)
       .forEach(({ name, prevVal }) => {
         // Inform the subscribers of the state change
-        this.subscribers.get$(name)
-          .take(1)
-          .subscribe((cb: any) => cb(prevVal))
+        this.subscribers.get$(name).pipe(
+          take(1)
+        ).subscribe((cb: any) => cb(prevVal))
       })
 
     this.latest$.next(previousState)
@@ -116,7 +113,7 @@ export class Store {
 
   /** Display the content of the store */
   dump(): void {
-    this.latest$.take(1).subscribe(
+    this.latest$.pipe(take(1)).subscribe(
       state => {
         console.log('Current store state')
         console.dir(state)
@@ -136,7 +133,7 @@ export class Store {
    * ```
    */
   constructor() {
-    this.updater$s.map(
+    this.updater$s.pipe(map(
       ({ name, data }: StoreUpdate) =>
         (history: StoreHistory) => {
           const newState =
@@ -148,9 +145,9 @@ export class Store {
 
           return [...history, newState]
 
-        }).subscribe(this.history.updater$s)
+        })).subscribe(this.history.updater$s)
 
-    this.rollback$s.map(() => {
+    this.rollback$s.pipe(map(() => {
       return (history: StoreHistory) => {
         const currentState = history.pop()
 
@@ -163,10 +160,10 @@ export class Store {
 
         return history
       }
-    }).subscribe(this.history.updater$s)
+    })).subscribe(this.history.updater$s)
 
-    this.flush$s.map(() => {
-      return (history: StoreHistory) => {
+    this.flush$s.pipe(map(() => {
+      return (history: StoreHistory): StoreHistory[] => {
 
         const currentState = history.length ? history[history.length - 1] : undefined
 
@@ -177,15 +174,15 @@ export class Store {
 
         return []
       }
-    }).subscribe(this.history.updater$s)
+    })).subscribe(this.history.updater$s)
 
-    this.commit$s.map(() => {
+    this.commit$s.pipe(map(() => {
       // need to return a function that can return an array that contains
       // the last element of an array (of history)
       return (history: StoreHistory) => {
         return history.splice(-1, 1) // only keep the last element
       }
-    }).subscribe(this.history.updater$s) // udpate the history
+    })).subscribe(this.history.updater$s) // udpate the history
   }
 
   /** Register an new value in the store
@@ -232,9 +229,10 @@ export class Store {
    * The returned observable only trigger if the stored value changes.
    */
   select$<T>(name: string): Observable<T> {
-    return this.latest$
-      .map((currentState: any): T => currentState[name])
-      .distinctUntilChanged()
+    return this.latest$.pipe(
+      map((currentState: any): T => currentState[name]),
+      distinctUntilChanged()
+    )
   }
 
   /** Return to the previous state in the history

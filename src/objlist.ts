@@ -2,9 +2,8 @@ import { List } from './list'
 import { Informer } from './informer'
 import { uuidv4 } from './uuidv4'
 import { IContainerById } from './ifs'
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/operator/map'
-import 'rxjs/observable/throw'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 /** A generic list of anything
  *
@@ -60,9 +59,11 @@ export class ObjList<T, ID = string> extends List<T>
 
   findById$(id: ID): Observable<T> {
     if (typeof (<T>null) === 'object' && this.idField !== undefined) {
-      return this.obs$.map((arr: T[]): T => {
-        return arr.find(c => c[this.idField] === id)
-      })
+      return this.obs$.pipe(
+        map((arr: T[]): T => {
+          return arr.find(c => c[this.idField] === id)
+        })
+      )
     }
     else {
       return Observable.throw('Invalid call to findById on list of literal object or object without id field')

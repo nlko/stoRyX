@@ -1,5 +1,5 @@
 import { Map } from './map'
-import 'rxjs/add/operator/take'
+import { take } from 'rxjs/operators'
 import { hot, cold } from 'jasmine-marbles';
 
 describe('Map tests', () => {
@@ -60,11 +60,11 @@ describe('Map tests', () => {
     const cb2 = jasmine.createSpy('spy 2');
     const cb3 = jasmine.createSpy('spy 3');
 
-    map.isSet$('smth').take(1).subscribe(cb1)
+    map.isSet$('smth').pipe(take(1)).subscribe(cb1)
     map.isSet$('smth').subscribe(cb3)
     map.set('smth2', 1)
     map.set('smth', 1)
-    map.isSet$('smth').take(1).subscribe(cb2)
+    map.isSet$('smth').pipe(take(1)).subscribe(cb2)
 
     expect(cb1).toHaveBeenCalledTimes(1)
     expect(cb1).toHaveBeenCalledWith(false)
