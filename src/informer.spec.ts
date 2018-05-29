@@ -10,8 +10,8 @@ describe('Informer Tests', () => {
     const i = new Informer<number>()
 
     i.inform(0)
-    expect(i.obs$).toBeObservable(cold('(a|)',{a:0}));
+    expect(i.obs$).toBeObservable(cold('(a|)', { a: 0 }));
     i.inform(1)
-    expect(i.obs$).toBeObservable(cold('(a|)',{a:0}));
+    expect(i.obs$).toBeObservable(cold('(a|)', { a: 0 }));
   })
 })

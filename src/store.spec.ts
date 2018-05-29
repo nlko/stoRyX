@@ -1,5 +1,4 @@
 import { Store } from './store'
-import * as Rx from 'rxjs'
 
 describe('Store tests', () => {
   const store = new Store()
@@ -231,13 +230,13 @@ describe('Store tests', () => {
     expect(cb21).toHaveBeenCalledWith(true)
 
     store.select$('val1')
-      .subscribe(x => {
+      .subscribe((x: any) => {
         cbBroadcast1(x)
-      }, err => console.log("Error: " + err.message))
+      }, (err: any) => console.log("Error: " + err.message))
 
-    store.select$('val2').subscribe(x => {
+    store.select$('val2').subscribe((x: any) => {
       cbBroadcast2(x)
-    }, err => console.log("Error: " + err.message))
+    }, (err: any) => console.log("Error: " + err.message))
     expect(cbBroadcast1).toHaveBeenCalledTimes(1);
     expect(cbBroadcast1).toHaveBeenCalledWith(undefined);
     expect(cbBroadcast2).toHaveBeenCalledTimes(1);
@@ -317,13 +316,13 @@ describe('Store tests', () => {
     expect(cb21).toHaveBeenCalledTimes(1)
     expect(cb21).toHaveBeenCalledWith(true)
 
-    store.select$('val1').subscribe(x => {
+    store.select$('val1').subscribe((x: any) => {
       cbBroadcast1(x)
-    }, err => console.log("Error: " + err.message))
+    }, (err: any) => console.log("Error: " + err.message))
 
-    store.select$('val2').subscribe(x => {
+    store.select$('val2').subscribe((x: any) => {
       cbBroadcast2(x)
-    }, err => console.log("Error: " + err.message))
+    }, (err: any) => console.log("Error: " + err.message))
 
     expect(cbBroadcast1).toHaveBeenCalledTimes(1);
     expect(cbBroadcast2).toHaveBeenCalledTimes(1);
@@ -385,13 +384,13 @@ describe('Store tests', () => {
     expect(cb21).toHaveBeenCalledTimes(1)
     expect(cb21).toHaveBeenCalledWith(true)
 
-    store.select$('val1').subscribe(x => {
+    store.select$('val1').subscribe((x: any) => {
       cbBroadcast1(x)
-    }, err => console.log("Error: " + err.message))
+    }, (err: any) => console.log("Error: " + err.message))
 
-    store.select$('val2').subscribe(x => {
+    store.select$('val2').subscribe((x: any) => {
       cbBroadcast2(x)
-    }, err => console.log("Error: " + err.message))
+    }, (err: any) => console.log("Error: " + err.message))
 
     store.update('val1', 1) // [{val1:1}]
     store.update('val1', 2) // [{val1:1},{val1:2}]

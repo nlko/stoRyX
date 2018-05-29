@@ -114,7 +114,7 @@ export class Store {
   /** Display the content of the store */
   dump(): void {
     this.latest$.pipe(take(1)).subscribe(
-      state => {
+      (state: StoreState) => {
         console.log('Current store state')
         console.dir(state)
       })

@@ -32,7 +32,7 @@ export class Map extends State<MapState> implements ILength {
 
   /** return an Observable of the length */
   get length$(): Observable<number> {
-    return this.obs$.pipe(map(x => Object.keys(x).length))
+    return this.obs$.pipe(map((x: any) => Object.keys(x).length))
   }
 
   /** Subject that can be used to set a new element value by sending a
@@ -86,7 +86,7 @@ export class Map extends State<MapState> implements ILength {
    * @return an observable on the data found.
    */
   getOr$ = (defValue: MapData, name: MapName): MapData => this.obs$.pipe(
-    map(map => map[name] !== undefined ? map[name] : defValue),
+    map((map: any) => map[name] !== undefined ? map[name] : defValue),
     distinctUntilChanged()
   )
 
@@ -95,8 +95,8 @@ export class Map extends State<MapState> implements ILength {
    * @param name - key of the data to retrieve
    **/
   get$ = (name: MapName): MapData => this.obs$.pipe(
-    filter(map => map[name] !== undefined),
-    map(map => map[name]),
+    filter((map: any) => map[name] !== undefined),
+    map((map: any) => map[name]),
     distinctUntilChanged()
   )
 
@@ -105,7 +105,7 @@ export class Map extends State<MapState> implements ILength {
    * @return an boolean observable indicating whetever the element exists or not.
    */
   isSet$ = (name: MapName): Observable<Boolean> => this.obs$.pipe(
-    map(map => map[name] !== undefined),
+    map((map: any) => map[name] !== undefined),
     distinctUntilChanged()
   )
 

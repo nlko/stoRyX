@@ -23,6 +23,10 @@ import { Observable, AsyncSubject } from 'rxjs'
  * @param T the object type returned
  */
 export class Informer<T> extends AsyncSubject<T> implements IHolder<T> {
+  constructor() {
+    super();
+  }
+
   /** Method to call once to set the value when its known.
    * This method will complete the informer object
    * @param val - Value to set.

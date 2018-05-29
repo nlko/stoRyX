@@ -38,7 +38,7 @@ describe('ObjList Tests', () => {
     expect(s.obs$).toBeObservable(cold('a', { a: [{ a: 'nico1', ID: '100' }] }));
 
     s.add$({ a: 'nico2' }).subscribe(
-      id => {
+      (id: number) => {
         expect(id).toBe(1)
         expect(s.obs$).toBeObservable(cold('a', { a: [{ a: 'nico1', ID: '100' }, { a: 'nico2', ID: '101' }] }));
 
@@ -62,7 +62,7 @@ describe('ObjList Tests', () => {
 
     expect(s.obs$).toBeObservable(cold('a', { a: [{ a: 'nico1', ID: '100' }] }));
 
-    s.add$({ a: 'nico2' }).subscribe(id => {
+    s.add$({ a: 'nico2' }).subscribe((id: any) => {
       expect(s.obs$).toBeObservable(cold('a', { a: [{ a: 'nico1', ID: '100' }, { a: 'nico2', ID: '101' }] }));
 
       expect(s.findById$("101")).toBeObservable(cold('a', { a: { a: 'nico2', ID: '101' } }));

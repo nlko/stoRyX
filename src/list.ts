@@ -26,7 +26,7 @@ export class List<T> extends State<T[]>
    * @return An Observable on the number of elements.
    */
   get length$(): Observable<number> {
-    return this.obs$.pipe(map(x => x.length))
+    return this.obs$.pipe(map((x: any[]) => x.length))
   }
 
   /**

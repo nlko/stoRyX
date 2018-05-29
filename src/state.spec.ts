@@ -24,7 +24,7 @@ describe('State Tests', () => {
     const isUpdate = jasmine.createSpy('Update obserable call');
 
     // ensure that the first value is the default one
-    s.obs$.subscribe((val) => {
+    s.obs$.subscribe((val: any) => {
       isUpdate(val)
       expect(val).toBe(expected.shift());
     });
