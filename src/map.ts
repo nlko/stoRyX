@@ -1,7 +1,8 @@
+import { IDumpable } from './ifs'
 import { State } from './state'
 import { ILength } from './ifs'
 import { Observable, Subject } from 'rxjs'
-import { map, filter, distinctUntilChanged } from 'rxjs/operators'
+import { map, filter, distinctUntilChanged, tap } from 'rxjs/operators'
 
 /** Type of data describing a [[Map]]. */
 export type MapState = any
@@ -94,11 +95,14 @@ export class Map extends State<MapState> implements ILength {
    * This function tries to return the value associated to the name key
    * @param name - key of the data to retrieve
    **/
-  get$ = (name: MapName): MapData => this.obs$.pipe(
-    filter((map: any) => map[name] !== undefined),
-    map((map: any) => map[name]),
-    distinctUntilChanged()
-  )
+  get$(name: MapName): MapData {
+    return this.obs$.pipe(
+      filter((map: any) => map[name] !== undefined),
+      map((map: any) => map[name]),
+      distinctUntilChanged(),
+      tap(console.dir)
+    )
+  }
 
   /** check if an element exist.
    * @param name - key of the data to check

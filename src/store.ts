@@ -1,3 +1,4 @@
+import { IDumpable } from './ifs'
 import { Map, MapData } from './map'
 import { State } from './state'
 import { Observable, Subject, BehaviorSubject } from 'rxjs'
@@ -50,7 +51,7 @@ class Subscribers extends Map {
  *
  * The store as an history that support [[rollback]] and can be flushed usinng [[commit]].
  */
-export class Store {
+export class Store implements IDumpable {
   // store state history
   private history: State<StoreHistory> = new State<StoreHistory>([])
 

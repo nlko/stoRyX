@@ -50,9 +50,14 @@ describe('Map tests', () => {
     const isSet3 = jasmine.createSpy('optional name');
 
     map.set('smth', 1)
+    map.set('smth2', 2)
     map.get$('smth').subscribe(isSet1)
+    map.get$('smth2').subscribe(isSet2)
     expect(isSet1).toHaveBeenCalledTimes(1)
     expect(isSet1).toHaveBeenCalledWith(1)
+    expect(isSet2).toHaveBeenCalledTimes(1)
+    expect(isSet2).toHaveBeenCalledWith(2)
+    console.log(map);
   })
 
   it('As a USER, I can subscribe on isSet$ observable and get updates', () => {

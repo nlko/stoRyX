@@ -61,3 +61,7 @@ export interface IContainerById<T, ID> extends IContainer<T> {
    */
   findById$(id: ID): Observable<T>
 }
+
+export interface IDumpable {
+  dump(): void;
+}
