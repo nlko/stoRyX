@@ -5,7 +5,10 @@ const path = require("path");
 const nodeEnv = process.env.NODE_ENV || "development";
 const isProd = nodeEnv === "production";
 
+const ROOT_DIR = __dirname;
+
 var config = {
+  mode: nodeEnv,
   devtool: /*isProd ? "hidden-source-map" :*/ "source-map",
   context: path.resolve("./src"),
   entry: {
@@ -28,7 +31,7 @@ var config = {
     rules: [{
         enforce: "pre",
         test: /\.ts?$/,
-        exclude: ["node_modules"],
+        exclude: [path.join(ROOT_DIR, 'node_modules')],
         use: ["awesome-typescript-loader", "source-map-loader"]
       },
       /*
