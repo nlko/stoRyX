@@ -1,21 +1,21 @@
-import { State } from './state'
-import { ILength } from './ifs'
-import { Observable, Subject } from 'rxjs'
-import { map, filter, distinctUntilChanged } from 'rxjs/operators'
+import { State } from './state';
+import { ILength } from './ifs';
+import { Observable, Subject } from 'rxjs';
+import { map, filter, distinctUntilChanged } from 'rxjs/operators';
 
 /** Type of data describing a [[Map]]. */
-export type MapState = any
+export type MapState = any;
 /** Type of data stored in a [[Map]] associated to a key. */
-export type MapData = any
+export type MapData = any;
 /** Type of data for keys that reference data in a [[Map]]. */
-export type MapName = string
+export type MapName = string;
 
 /** Type of message to use to modify a value in the [[Map]] with the set$s
  * subject attribute.
  * @param name - key of the data to update in the [[Map]];
  * @param data - the new data value.
  */
-export type MapSetMessage = { name: MapName, data: MapData }
+export type MapSetMessage = { name: MapName, data: MapData };
 
 /** A map object that contained data element indexed using a string.
  *
@@ -32,18 +32,18 @@ export class Map extends State<MapState> implements ILength {
 
   /** return an Observable of the length */
   get length$(): Observable<number> {
-    return this.obs$.pipe(map((x: any) => Object.keys(x).length))
+    return this.obs$.pipe(map((x: any) => Object.keys(x).length));
   }
 
   /** Subject that can be used to set a new element value by sending a
    * [[MapSetMessage]] into.
    */
-  set$s = new Subject<MapSetMessage>()
+  set$s = new Subject<MapSetMessage>();
 
   /** Subject than can be used to delete an element by sending the key of the
    * element to delete.
    */
-  delete$s = new Subject<MapName>()
+  delete$s = new Subject<MapName>();
 
   /**
    * @param initialValue - The initial value of map
@@ -56,17 +56,17 @@ export class Map extends State<MapState> implements ILength {
    * ```
    */
   constructor(initialValue: MapState = {}) {
-    super(initialValue)
+    super(initialValue);
 
     this.set$s.pipe(map(({ name, data }: MapSetMessage) => (state: MapState) => {
-      state[name] = data
-      return state
-    })).subscribe(this.updater$s)
+      state[name] = data;
+      return state;
+    })).subscribe(this.updater$s);
 
     this.delete$s.pipe(map((name: MapName) => (state: MapState) => {
-      delete state[name]
-      return state
-    })).subscribe(this.updater$s)
+      delete state[name];
+      return state;
+    })).subscribe(this.updater$s);
   }
 
   /** Set an element value
@@ -74,7 +74,7 @@ export class Map extends State<MapState> implements ILength {
    * @param data - the new element value.
    */
   set(name: MapName, data: MapData): void {
-    this.set$s.next({ name, data })
+    this.set$s.next({ name, data });
   }
 
   /** retrieve an element with default value.
@@ -93,7 +93,7 @@ export class Map extends State<MapState> implements ILength {
   /** retrieve an element.
    * This function tries to return the value associated to the name key
    * @param name - key of the data to retrieve
-   **/
+   */
   get$ = (name: MapName): MapData => this.obs$.pipe(
     filter((map: any) => map[name] !== undefined),
     map((map: any) => map[name]),
@@ -113,12 +113,12 @@ export class Map extends State<MapState> implements ILength {
    * @param name - key of the data todelete
    */
   delete(name: MapName): void {
-    this.delete$s.next(name)
+    this.delete$s.next(name);
   }
 
   /** remove all element from the map.
    */
   flush(): void {
-    this.updater$s.next((_: any) => ({}))
+    this.updater$s.next((_: any) => ({}));
   }
 }

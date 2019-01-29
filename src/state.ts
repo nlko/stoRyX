@@ -1,11 +1,11 @@
 import { IHolder } from "./ifs";
-import { Observable, Subject, BehaviorSubject } from 'rxjs'
-import { scan } from 'rxjs/operators'
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { scan } from 'rxjs/operators';
 
 /** Type of the transformation functions that can be used to update a [[State]]
  * object.
  */
-export type StateUpdateFn<S> = (s: S) => S
+export type StateUpdateFn<S> = (s: S) => S;
 /** A generic container object that can be subscribed to.
  *
  * The content value can be updated using the [[update]] method or the
@@ -31,13 +31,13 @@ export class State<S> implements IHolder<S> {
    * s.obs$.filter(v => v%2==0 ).subscribe(stateContent => console.dir(stateContent))
    * ```
    */
-  readonly obs$: Observable<S>
+  readonly obs$: Observable<S>;
 
   /** Internal current data subject. */
-  private currentState$: BehaviorSubject<S>
+  private currentState$: BehaviorSubject<S>;
 
   /** Internal subject to use for updating the stored content. */
-  private _updater$: Subject<StateUpdateFn<S>>
+  private _updater$: Subject<StateUpdateFn<S>>;
 
   /** Property to retrieve a subject to be used to update the content.
    *
@@ -56,7 +56,7 @@ export class State<S> implements IHolder<S> {
    * @return A subject for updating the content.
    */
   public get updater$s(): Subject<StateUpdateFn<S>> {
-    return this._updater$
+    return this._updater$;
   }
 
   /**
@@ -71,11 +71,11 @@ export class State<S> implements IHolder<S> {
    * ```
    */
   constructor(initialValue: S) {
-    this._updater$ = new Subject<StateUpdateFn<S>>()
-    this.currentState$ = new BehaviorSubject<S>(initialValue)
-    this.obs$ = this.currentState$.asObservable()
-    const dispatcher = (state: S, op: StateUpdateFn<S>) => op(state)
-    this._updater$.pipe(scan(dispatcher, initialValue)).subscribe(this.currentState$)
+    this._updater$ = new Subject<StateUpdateFn<S>>();
+    this.currentState$ = new BehaviorSubject<S>(initialValue);
+    this.obs$ = this.currentState$.asObservable();
+    const dispatcher = (state: S, op: StateUpdateFn<S>) => op(state);
+    this._updater$.pipe(scan(dispatcher, initialValue)).subscribe(this.currentState$);
   }
 
   /** Method to be used to update the content.
@@ -106,6 +106,6 @@ export class State<S> implements IHolder<S> {
    * @return nothing
    */
   public update(fn: StateUpdateFn<S>): void {
-    this._updater$.next((state: S) => fn(state))
+    this._updater$.next((state: S) => fn(state));
   }
 }

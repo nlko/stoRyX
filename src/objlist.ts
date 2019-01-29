@@ -1,9 +1,9 @@
-import { List } from './list'
-import { Informer } from './informer'
-import { uuidv4 } from './uuidv4'
-import { IContainerById } from './ifs'
-import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { List } from './list';
+import { Informer } from './informer';
+import { uuidv4 } from './uuidv4';
+import { IContainerById } from './ifs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 /** A generic list of anything
  *
@@ -32,7 +32,7 @@ export class ObjList<T, ID = string> extends List<T>
    * @param idGenerator - A function that returns an id of the type compatible with ID.
    */
   constructor(initialContent: T[] = [], protected idField: string = undefined, private idGenerator = uuidv4) {
-    super(initialContent)
+    super(initialContent);
   }
 
   /** Remove all the element with a provided id.
@@ -41,32 +41,32 @@ export class ObjList<T, ID = string> extends List<T>
    */
   removeById(id: ID): void {
     if (typeof (<T>null) === 'object' && this.idField !== undefined)
-      this.update(state => state.filter(c => c[this.idField] !== id))
+      this.update(state => state.filter(c => c[this.idField] !== id));
     else {
-      throw ('Invalid call to removeById on list of literal object or object without id field')
+      throw ('Invalid call to removeById on list of literal object or object without id field');
     }
   }
 
   add$(element: T): Observable<number> {
-    const id = new Informer<number>()
+    const id = new Informer<number>();
 
     if (typeof element === 'object' && element[this.idField] === undefined) {
-      element[this.idField] = this.idGenerator()
+      element[this.idField] = this.idGenerator();
     }
 
-    return super.add$(element)
+    return super.add$(element);
   }
 
   findById$(id: ID): Observable<T> {
     if (typeof (<T>null) === 'object' && this.idField !== undefined) {
       return this.obs$.pipe(
         map((arr: T[]): T => {
-          return arr.find(c => c[this.idField] === id)
+          return arr.find(c => c[this.idField] === id);
         })
-      )
+      );
     }
     else {
-      return Observable.throw('Invalid call to findById on list of literal object or object without id field')
+      return Observable.throw('Invalid call to findById on list of literal object or object without id field');
     }
   }
 }
