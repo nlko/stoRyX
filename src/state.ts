@@ -52,11 +52,17 @@ export class State<S> implements IHolder<S> {
    * const append => newVal => stateContent => [...stateContent, newVal]
    * s.updater$s.next(append(2))
    * ```
+   * It is also possible to directly set the state instead of passing a function updating the state
+   * ```
+   * const s = new State<number[]>([1])
+   * s.obs$.subscribe(stateContent => console.dir(stateContent))
+   * s.updater$s.next([3,4,5])
+   * ```
    *
    * @return A subject for updating the content.
    */
-  public get updater$s(): Subject<StateUpdateFn<S>> {
-    return this._updater$;
+  public get updater$s(): Subject<StateUpdateFn<S>|S> {
+    return this._updater$ as Subject<StateUpdateFn<S>|S>;
   }
 
   /**
@@ -74,13 +80,14 @@ export class State<S> implements IHolder<S> {
     this._updater$ = new Subject<StateUpdateFn<S>>();
     this.currentState$ = new BehaviorSubject<S>(initialValue);
     this.obs$ = this.currentState$.asObservable();
-    const dispatcher = (state: S, op: StateUpdateFn<S>) => op(state);
+    const dispatcher = (state: S, op: StateUpdateFn<S>) =>
+      typeof op === 'function' ? op(state) : (op as S);
     this._updater$.pipe(scan(dispatcher, initialValue)).subscribe(this.currentState$);
   }
 
   /** Method to be used to update the content.
    *
-   * Example:
+   * Example 1:
    *
    * The following add a value to the content of a State that contain a list of
    * number. Subscribers will receive updates.
@@ -99,13 +106,28 @@ export class State<S> implements IHolder<S> {
    * // (Subscribers, like above will be triggered)
    * s.update(append(2))
    * ```
+   * Example 2:
+   *
+   * The following set the content of a State that contain a list of
+   * number. Subscribers will receive updates.
+   * ```
+   * // Create a state with an initial value
+   * const s = new State<number[]>([1])
+   *
+   * // Subscribe to the state
+   * s.obs$.subscribe(stateContent => console.dir(stateContent))
+   *
+   * // Set the new array contained in the state s.
+   * // (Subscribers, like above will be triggered)
+   * s.update([3,4])
+   * ```
    *
    * @param fn - A transformation function that takes as argument the current data of the
    * state and return the updated data.
    *
    * @return nothing
    */
-  public update(fn: StateUpdateFn<S>): void {
-    this._updater$.next((state: S) => fn(state));
+  public update(fn: StateUpdateFn<S>|S): void {
+    this._updater$.next(fn as StateUpdateFn<S>);
   }
 }

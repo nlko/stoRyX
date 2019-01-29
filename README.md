@@ -69,8 +69,3 @@ to create the appropriate tests that check the bug correction or the feature.
 Feel free to ask whenever something is not clear from the documentation point
 of view. We will complete the documentation. Please do not ask question related
 to how to use RxJS.
-
-### Feature requests aka Specific development request
-
-If you need some specific developement, feel free to ask for quotation to anyone
-that feels able to help you for that purpose.
