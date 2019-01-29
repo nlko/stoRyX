@@ -1,5 +1,5 @@
-import { IHolder } from './ifs'
-import { Observable, AsyncSubject } from 'rxjs'
+import { IHolder } from './ifs';
+import { Observable, AsyncSubject } from 'rxjs';
 
 /** A small class to use when it is needed to return an asyncronous information.
  * (it's just a wrapper around AsyncSubject)
@@ -32,14 +32,14 @@ export class Informer<T> extends AsyncSubject<T> implements IHolder<T> {
    * @param val - Value to set.
    */
   public inform(val: T): void {
-    this.next(val)
-    this.complete()
+    this.next(val);
+    this.complete();
   }
 
   /** Method to retrieve the observable to wait on for obtaining the value
    * @return A cold observable on the value.
    */
   public get obs$(): Observable<T> {
-    return this.asObservable()
+    return this.asObservable();
   }
 }

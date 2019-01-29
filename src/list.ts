@@ -1,9 +1,9 @@
-import { ILength } from './ifs'
-import { State } from './state'
-import { Informer } from './informer'
-import { IContainer } from './ifs'
-import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { ILength } from './ifs';
+import { State } from './state';
+import { Informer } from './informer';
+import { IContainer } from './ifs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 /** A generic list of literal.
  *
@@ -26,7 +26,7 @@ export class List<T> extends State<T[]>
    * @return An Observable on the number of elements.
    */
   get length$(): Observable<number> {
-    return this.obs$.pipe(map((x: any[]) => x.length))
+    return this.obs$.pipe(map((x: any[]) => x.length));
   }
 
   /**
@@ -41,7 +41,7 @@ export class List<T> extends State<T[]>
    * @param initialContent - An array with the initial content of the list.
    */
   constructor(initialContent: T[] = []) {
-    super(initialContent)
+    super(initialContent);
   }
 
   /** Remove an element using its position in the list.
@@ -51,8 +51,8 @@ export class List<T> extends State<T[]>
     this.update(state => {
       if (position >= 0 && position < state.length)
         state.splice(position, 1);
-      return state
-    })
+      return state;
+    });
   }
 
   /** Add an element at the end of the list.
@@ -61,14 +61,14 @@ export class List<T> extends State<T[]>
    * the list.
    */
   add$(element: T): Observable<number> {
-    const id = new Informer<number>()
+    const id = new Informer<number>();
 
     this.update(state => {
-      id.inform(state.length)
-      return [...state, element]
-    })
+      id.inform(state.length);
+      return [...state, element];
+    });
 
-    return id.obs$
+    return id.obs$;
   }
 
   /** Retrieve the element value from the list according to its possition in
@@ -77,6 +77,6 @@ export class List<T> extends State<T[]>
    * @return A hot observable to the element.
    */
   get$(id: number): Observable<T> {
-    return this.obs$.pipe(map((arr: T[]): T => { return arr[id] }))
+    return this.obs$.pipe(map((arr: T[]): T => { return arr[id]; }));
   }
 }

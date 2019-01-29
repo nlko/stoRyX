@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs';
 
 /** An interface that enforce object holding.
  *
@@ -10,7 +10,7 @@ import { Observable } from 'rxjs'
 export interface IHolder<T> {
   /** an observable on an object of type T
    */
-  readonly obs$: Observable<T>
+  readonly obs$: Observable<T>;
 }
 
 /** An interface that enforce the return of lenght
@@ -19,7 +19,7 @@ export interface IHolder<T> {
  */
 export interface ILength {
   /** Return an observable of the length */
-  readonly length$: Observable<number>
+  readonly length$: Observable<number>;
 }
 
 /** Interface for a iterative container
@@ -31,18 +31,18 @@ export interface IContainer<T> {
    * @param position - The position of the element to return
    * @return A hot observable to the element.
    */
-  get$(id: number): Observable<T>
+  get$(id: number): Observable<T>;
 
   /** Remove an element using its position in the list
    * @param position - The position index of the element to remove.
    */
-  remove(position: number): void
+  remove(position: number): void;
 
   /** Add an element at the end of the list
    * @param element - The element to append to the list.
    * @return A cold observable containing the index of the added element in list.
    */
-  add$(element: T): Observable<number>
+  add$(element: T): Observable<number>;
 }
 
 /** Interface for containers having specific ways for idendifying data
@@ -53,11 +53,11 @@ export interface IContainerById<T, ID> extends IContainer<T> {
   /** Remove an element from a container according to its ID
    * @param id - Id of the element to remove.
    */
-  removeById(id: ID): void
+  removeById(id: ID): void;
 
   /** Find an element in a container according to its ID
    * @param id - Id of the element to find.
    * @return an observable on the element found.
    */
-  findById$(id: ID): Observable<T>
+  findById$(id: ID): Observable<T>;
 }
