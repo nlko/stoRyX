@@ -1,6 +1,6 @@
 {
   "name": "storyx",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "main": "src/index.ts",
   "homepage": "https://github.com/nlko/stoRyX",
   "repository": {
