@@ -39,10 +39,37 @@ export interface IContainer<T> {
   remove(position: number): void;
 
   /** Add an element at the end of the list
+   * @deprecated
+   * @param element - The element to append to the list.
+   * @return A cold observable containing the index of the added element in list.
+   * @see add$1
+   */
+  add$(element: T): Observable<number>;
+
+  /** Add an element at the end of the list
    * @param element - The element to append to the list.
    * @return A cold observable containing the index of the added element in list.
    */
-  add$(element: T): Observable<number>;
+  add$1(element: T): Observable<number>;
+
+  /** Remove the last element of the container.
+   * @return A cold observable containing the value of the removed element in
+   * the container (observable will return undefined if the container is empty).
+   */
+  pop$1(): Observable<T>;
+
+  /** Add an element at the start of the container.
+   * @param element - The element to prepend to the container.
+   * @return nothing.
+   */
+  unshift$1(element: T): Observable<number>;
+
+  /** Remove an element at the start of the container.
+   * @param element - The element to prepend to the container.
+   * @return a cold observable on the removed element (observable returns undefined if the container is empty).
+   */
+  shift$1(): Observable<T>;
+
 }
 
 /** Interface for containers having specific ways for idendifying data

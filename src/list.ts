@@ -56,6 +56,7 @@ export class List<T> extends State<T[]>
   }
 
   /** Add an element at the end of the list.
+   * @deprecated
    * @param element - The element to append to the list.
    * @return A cold observable containing the index of the added element in
    * the list.
@@ -69,6 +70,65 @@ export class List<T> extends State<T[]>
     });
 
     return id.obs$;
+  }
+
+  /** Add an ele
+   * @deprecated
+   * @param element - The element to append to the list.
+   * @return A cold observable containing the index of the added element in
+   * the list.
+   */
+  add$1 = this.add$;
+
+  /** @see add$1 */
+  push$1 = this.add$1;
+
+  /** Remove the last element of the list.
+   * @return A cold observable containing the value of the removed element in
+   * the list (observable will return undefined if the list is empty).
+   */
+  pop$1(): Observable<T> {
+    const id = new Informer<T>();
+
+    this.update((list: T[]) => {
+      const len = list.length;
+      const rest = list.slice(undefined, len - 1);
+      const element = list.slice(len - 1, len)[0]; // return undefined if empty
+      id.inform(element);
+      return rest;
+    });
+
+    return id.obs$;
+  }
+
+  /** Add an element at the start of the list.
+   * @param element - The element to prepend to the list.
+   * @return nothing.
+   */
+  unshift$1(element: T): Observable<number> {
+    const id = new Informer<number>();
+
+    this.update(state => {
+      id.inform(0);
+      return [element, ...state];
+    });
+
+    return id.obs$;
+  }
+
+  /** Remove an element at the start of the list.
+   * @param element - The element to prepend to the list.
+   * @return a cold observable on the removed element (observable returns undefined if the list is empty).
+   */
+  shift$1(): Observable<T> {
+    const elem = new Informer<T>();
+    this.update(([element, ...rest]) => {
+      elem.inform(element);
+      return rest;
+    });
+
+    return elem.obs$;
+
   }
 
   /** Retrieve the element value from the list according to its possition in
