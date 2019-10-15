@@ -1,6 +1,6 @@
-import { IHolder } from "./ifs";
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { scan } from 'rxjs/operators';
+import { IHolder } from "./ifs";
 
 /** Type of the transformation functions that can be used to update a [[State]]
  * object.
@@ -12,12 +12,14 @@ export type StateUpdateFn<S> = (s: S) => S;
  * [[updater$s]] subject.
  *
  * It is possible to subscribe to content change event using the [[obs$]]
- * property. On subscription, the last value (or the initial value) is
+ * property. Upon subscription, the last value (or the initial value) is
  * returned.
  *
- * A S parameter allows to define the type of data contained at the creation.
+ * A S parameter allows to define the type of data contained.
  *
- * It is mandatory to provide an initial value at the creation.
+ * It is not mandatory to provide an initial value directly at the creation. In that
+ * case a subsriber may receive the first value with a delay (depending on when one
+ * will use the [[update]] method to set a value).
  *
  * @param S - The type of the thing stored into the State object.
  * It can be an a literal, an object, an array,...
@@ -34,14 +36,14 @@ export class State<S> implements IHolder<S> {
   readonly obs$: Observable<S>;
 
   /** Internal current data subject. */
-  private currentState$: BehaviorSubject<S>;
+  private currentState$: ReplaySubject<S>;
 
   /** Internal subject to use for updating the stored content. */
   private _updater$: Subject<StateUpdateFn<S>>;
 
   /** Property to retrieve a subject to be used to update the content.
    *
-   * Example:
+   * Examples:
    *
    * The following add a value to the content of a State that contain a list of
    * number. Subscribers will receive updates. (see [[update]] for an example
@@ -50,13 +52,19 @@ export class State<S> implements IHolder<S> {
    * const s = new State<number[]>([1])
    * s.obs$.subscribe(stateContent => console.dir(stateContent))
    * const append => newVal => stateContent => [...stateContent, newVal]
-   * s.updater$s.next(append(2))
+   * s.updater$s.next(append(2)); // see below the update syntax shortcut.
    * ```
    * It is also possible to directly set the state instead of passing a function updating the state
    * ```
    * const s = new State<number[]>([1])
    * s.obs$.subscribe(stateContent => console.dir(stateContent))
    * s.updater$s.next([3,4,5])
+   * ```
+   * In some case it is not required have any initial value
+   * ```
+   * const s = new State<number>() // no initial value
+   * s.obs$.subscribe(stateContent => console.dir(stateContent)) // triggered with a 1 second delay
+   * setTimeout(() => s.update(1), 1000) // delay the update
    * ```
    *
    * @return A subject for updating the content.
@@ -68,21 +76,28 @@ export class State<S> implements IHolder<S> {
   /**
    * Examples:
    * ```
-   * // create an state containing a number with default value 0
-   * const s0 = new State<number>(0)
-   * // create an state containing an object with its default value
-   * const s1 = new State<{ val: number }>({val:1})
-   * // create an state containing an array of object with its default value
-   * const s2 = new State<{ val: number }[]>([{ val: 1 }, { val: 2 }])
+   * // create a state containing a number but with no initial value
+   * const s0 = new State<number>()
+   * // create a state containing a number with default value 0
+   * const s1 = new State<number>(0)
+   * // create a state containing an object with its default value
+   * const s2 = new State<{ val: number }>({val:1})
+   * // create a state containing an array of object with its default value
+   * const s3 = new State<{ val: number }[]>([{ val: 1 }, { val: 2 }])
    * ```
    */
-  constructor(initialValue: S) {
+  constructor(initialValue: S = undefined) {
     this._updater$ = new Subject<StateUpdateFn<S>>();
-    this.currentState$ = new BehaviorSubject<S>(initialValue);
+    this.currentState$ = new ReplaySubject<S>(1);
     this.obs$ = this.currentState$.asObservable();
     const dispatcher = (state: S, op: StateUpdateFn<S>) =>
       typeof op === 'function' ? op(state) : (op as S);
+    // TBD is there a memory leak
     this._updater$.pipe(scan(dispatcher, initialValue)).subscribe(this.currentState$);
+
+    if (initialValue !== undefined) {
+      this.update(initialValue);
+    }
   }
 
   /** Method to be used to update the content.
@@ -120,6 +135,34 @@ export class State<S> implements IHolder<S> {
    * // Set the new array contained in the state s.
    * // (Subscribers, like above will be triggered)
    * s.update([3,4])
+   * ```
+   *
+   * Example 3:
+   *
+   * The following exemple create a state without initial value.
+   * Later the content is set and latter it is updated
+   *
+   * ```
+   * // Create a state with an initial value
+   *
+   * const s = new State<number[]>()
+   *
+   * // Subscribe to the state
+   * s.obs$.subscribe(stateContent => console.dir(stateContent))
+   *
+   * // transformation function that append a value at the end of an array and
+   * // return the new array.
+   * const append => newVal => stateContent => [...stateContent, newVal]
+   *
+   * // Set an initial value
+   * // Set the new array contained in the state s.
+   * // (Subscribers, like above will be triggered)
+   * s.update([1])
+   *
+   * // Update the content by adding a value to the list
+   * // Set the new array contained in the state s.
+   * // (Subscribers, like above will be triggered)
+   * s.update(append(2));
    * ```
    *
    * @param fn - A transformation function that takes as argument the current data of the
