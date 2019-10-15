@@ -1,6 +1,6 @@
 {
   "name": "storyx",
-  "version": "2.1.0",
+  "version": "2.2.1",
   "main": "src/index.ts",
   "homepage": "https://github.com/nlko/stoRyX",
   "repository": {
@@ -14,7 +14,8 @@
   "scripts": {
     "doc": "./node_modules/.bin/typedoc --out ./doc src/*.ts --exclude \"src/**/*+(index|.spec|.e2e).ts\" --excludeExternals --externalPattern \"**/node_modules/**\" --ignoreCompilerErrors",
     "packagr": "ng-packagr -p ng-package.json",
-    "test": "ts-node node_modules/jasmine/bin/jasmine"
+    "test": "ts-node node_modules/jasmine/bin/jasmine",
+    "release": "yarn packagr && yarn publish dist"
   },
   "license": "MIT",
   "devDependencies": {
@@ -23,12 +24,12 @@
     "@angular/core": "^7.2.15",
     "@types/jasmine": "^3.3.12",
     "jasmine": "^3.4.0",
-    "jasmine-marbles": "^0.5.0",
+    "jasmine-marbles": "^0.6.0",
     "ng-packagr": "^5.2.0",
     "ts-node": "^8.1.0",
     "tslib": "^1.9.0",
     "tslint": "^5.20.0",
-    "typedoc": "^0.14.2",
+    "typedoc": "^0.15",
     "typescript": "3.2.4",
     "zone.js": "~0.8.26"
   },
