@@ -98,6 +98,7 @@ export class Store {
   // Dispatch update events when necessary to registered subscribers.
   private storeStateUpdate(names: string[], previousState: StoreState, currentState: StoreState): void {
     // For each backed object
+    // TBD can be improved
     names
       .map((name: string) => ({ name, prevVal: previousState[name] }))
       .filter(({ name, prevVal }) => currentState[name] !== prevVal)
@@ -133,6 +134,7 @@ export class Store {
    * ```
    */
   constructor() {
+    // TBD is there a memory leak
     this.updater$s.pipe(map(
       ({ name, data }: StoreUpdate) =>
         (history: StoreHistory) => {
@@ -147,6 +149,7 @@ export class Store {
 
         })).subscribe(this.history.updater$s);
 
+    // TBD is there a memory leak
     this.rollback$s.pipe(map(() => {
       return (history: StoreHistory) => {
         const currentState = history.pop();
@@ -162,6 +165,7 @@ export class Store {
       };
     })).subscribe(this.history.updater$s);
 
+    // TBD is there a memory leak
     this.flush$s.pipe(map(() => {
       return (history: StoreHistory): StoreHistory[] => {
 
@@ -176,6 +180,7 @@ export class Store {
       };
     })).subscribe(this.history.updater$s);
 
+    // TBD is there a memory leak
     this.commit$s.pipe(map(() => {
       // need to return a function that can return an array that contains
       // the last element of an array (of history)

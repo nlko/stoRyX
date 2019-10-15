@@ -17,7 +17,7 @@ import { map } from 'rxjs/operators';
  * the obs$ attribute and other method or attribute can be used (like update
  * method).
  *
- * @param T - The literal type of the data contained by the list instance.
+ * @typeparam T - The literal type of the data contained by the list instance.
  */
 export class List<T> extends State<T[]>
   implements ILength, IContainer<T> {
@@ -72,7 +72,7 @@ export class List<T> extends State<T[]>
     return id.obs$;
   }
 
-  /** Add an ele
+  /** Add an element at the end of the list.
    * @deprecated
    * @param element - The element to append to the list.
    * @return A cold observable containing the index of the added element in
@@ -103,6 +103,7 @@ export class List<T> extends State<T[]>
 
   /** Add an element at the start of the list.
    * @param element - The element to prepend to the list.
+   * @typeparam T - The literal type of the data contained by the list instance.
    * @return nothing.
    */
   unshift$1(element: T): Observable<number> {

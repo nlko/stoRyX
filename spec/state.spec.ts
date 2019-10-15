@@ -6,7 +6,7 @@ describe('State Tests', () => {
     expect(new State<number>(0)).toEqual(jasmine.any(State));
   });
 
-  it('As a USER, I must set a default valuet to a State', () => {
+  it('As a USER, I can set a default valuet to a State', () => {
     const s = new State<number>(0);
     expect(s.obs$).toBeObservable(cold('a', { a: 0 }));
   });
