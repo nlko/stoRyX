@@ -20,12 +20,16 @@ describe('Storyx tests', () => {
   it('As a DEVELOPER, I should be able to use Informer', () => {
     expect(new S.Informer()).toEqual(jasmine.any(S.Informer));
   });
-  
+
   it('As a DEVELOPER, I should be able to use List', () => {
     expect(new S.List()).toEqual(jasmine.any(S.List));
   });
-  
+
   it('As a DEVELOPER, I should be able to use ObjList', () => {
     expect(new S.ObjList()).toEqual(jasmine.any(S.ObjList));
+  });
+
+  it('As a DEVELOPER, I should be able to use Transformer', () => {
+    expect(new S.Transformer<any, any>(null)).toEqual(jasmine.any(S.Transformer));
   });
 });
