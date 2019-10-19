@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { Observable, ReplaySubject, Subject, PartialObserver } from 'rxjs';
 import { scan } from 'rxjs/operators';
 import { IHolder } from "./ifs";
 
@@ -39,7 +39,7 @@ export class State<S> implements IHolder<S> {
   private currentState$: ReplaySubject<S>;
 
   /** Internal subject to use for updating the stored content. */
-  private _updater$: Subject<StateUpdateFn<S>>;
+  private _updater$: Subject<StateUpdateFn<S>|S>;
 
   /** Property to retrieve a subject to be used to update the content.
    *
@@ -68,9 +68,14 @@ export class State<S> implements IHolder<S> {
    * ```
    *
    * @return A subject for updating the content.
+   *
+   * Remark: The returned observer is partial and will ignore `error` and `complete` messages.
    */
-  public get updater$s(): Subject<StateUpdateFn<S>|S> {
-    return this._updater$ as Subject<StateUpdateFn<S>|S>;
+  public get updater$s(): PartialObserver<StateUpdateFn<S>|S> {
+    return {
+      next: (val: StateUpdateFn<S>|S) => this._updater$.next(val),
+      error: () => {}
+    };
   }
 
   /**
@@ -87,11 +92,11 @@ export class State<S> implements IHolder<S> {
    * ```
    */
   constructor(initialValue: S = undefined) {
-    this._updater$ = new Subject<StateUpdateFn<S>>();
+    this._updater$ = new Subject<StateUpdateFn<S>|S>();
     this.currentState$ = new ReplaySubject<S>(1);
     this.obs$ = this.currentState$.asObservable();
-    const dispatcher = (state: S, op: StateUpdateFn<S>) =>
-      typeof op === 'function' ? op(state) : (op as S);
+    const dispatcher = (state: S, op: StateUpdateFn<S>|S) =>
+      typeof op === 'function' ? (op as StateUpdateFn<S>)(state) : (op as S);
     // TBD is there a memory leak
     this._updater$.pipe(scan(dispatcher, initialValue)).subscribe(this.currentState$);
 

@@ -1,5 +1,5 @@
 import { State } from '..';
-import { hot, cold } from 'jasmine-marbles';
+import { hot, cold, getTestScheduler } from 'jasmine-marbles';
 
 describe('State Tests', () => {
   it('As a USER, I can create a State', () => {
@@ -125,5 +125,67 @@ describe('State Tests', () => {
     expect(isUpdate).toHaveBeenCalledTimes(2);
     expect(isUpdate).toHaveBeenCalledWith(updatedValue);
   });
+
+  it('As a USER, I cannot close the input of the State 1.', () => {
+
+    const source1 = cold('-0-2|');
+    const source2 = cold('--1|');
+    const source3 = cold('----3#');
+    const result = hot('^0123');
+
+    // Create the state under test
+    const s = new State<number>();
+
+    source1.subscribe(s.updater$s);
+    source2.subscribe(s.updater$s);
+    source3.subscribe(s.updater$s);
+
+    expect(s.obs$).toBeObservable(result);
+  });
+
+  it('As a USER, I cannot close the input of the State 2.', () => {
+
+    const source1 = cold('-0-2|');
+    const source2 = cold('--1--4|');
+    const source3 = cold('----3#');
+    const result = hot('^0123'); // <- source 2 not received because it will be unsubscribed.
+
+    // Create the state under test
+    const s = new State<number>();
+
+    source1.subscribe(s.updater$s);
+    const sub = source2.subscribe(s.updater$s);
+    source3.subscribe(s.updater$s);
+
+    // Unsubscribe earlier
+    getTestScheduler().schedule(() => sub.unsubscribe(), 40);
+
+    // No influence on another subscription
+    expect(s.obs$).toBeObservable(result);
+  });
+
+  it('As a USER, I cannot close the output of the State 1.', () => {
+
+    const source1 = cold('-0-2|');
+    const source2 = cold('--1|');
+    const source3 = cold('----3#');
+    const result = hot('^0123');
+
+    // Create the state under test
+    const s = new State<number>();
+
+    source1.subscribe(s.updater$s);
+    source2.subscribe(s.updater$s);
+    source3.subscribe(s.updater$s);
+
+    const dummySub = s.obs$.subscribe();
+
+    // Unsubscribe earlier
+    getTestScheduler().schedule(() => dummySub.unsubscribe(), 20);
+
+    // No influence on another subscription
+    expect(s.obs$).toBeObservable(result);
+  });
+
 
 });
