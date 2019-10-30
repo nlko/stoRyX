@@ -1,14 +1,27 @@
+import { cold, getTestScheduler, hot } from 'jasmine-marbles';
+import { take } from 'rxjs/operators';
 import { State } from '..';
-import { hot, cold, getTestScheduler } from 'jasmine-marbles';
 
-describe('State Tests', () => {
+describe('State Tests: ', () => {
   it('As a USER, I can create a State', () => {
     expect(new State<number>(0)).toEqual(jasmine.any(State));
   });
 
-  it('As a USER, I can set a default valuet to a State', () => {
+  it('As a USER, I can set a default value to a State', () => {
     const s = new State<number>(0);
     expect(s.obs$).toBeObservable(cold('a', { a: 0 }));
+  });
+
+  it('As a USER, I can use toPromise on a State', (done) => {
+    const s = new State<number>(1);
+
+    s.obs$.pipe(take(2)).toPromise().then(
+      a => {
+        expect(a).toBe(0);
+        done();
+    });
+
+    setTimeout(() => s.update(0), 100);
   });
 
   it('As a USER, I can create a state without initial value', () => {
