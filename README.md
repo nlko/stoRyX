@@ -1,6 +1,6 @@
 # StoRyX
 ## Documentation
-**Full documentation is available at http://storyx.netlify.com/**
+**Full documentation is available at http://storyx.netlify.app/**
 ## What is that
 StoRyX is a collection of tools (mostly containers) that can be registered to for receiving events of change.
 The eventing relies on RxJs library.
