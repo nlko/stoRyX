@@ -35,6 +35,16 @@ export class State<S> implements IHolder<S> {
    */
   readonly obs$: Observable<S>;
 
+  /** The last value of the data.
+   * 
+   * Allow 
+   * 
+   * Example:
+   * const s = new State<number>(0)
+   * console.log(s.snapshot == 0) // true
+   */
+  //readonly snapshot: S;
+
   /** Internal current data subject. */
   private currentState$: ReplaySubject<S>;
 
@@ -51,7 +61,7 @@ export class State<S> implements IHolder<S> {
    * ```
    * const s = new State<number[]>([1])
    * s.obs$.subscribe(stateContent => console.dir(stateContent))
-   * const append => newVal => stateContent => [...stateContent, newVal]
+   * const append = newVal => stateContent => [...stateContent, newVal]
    * s.updater$s.next(append(2)); // see below the update syntax shortcut.
    * ```
    * It is also possible to directly set the state instead of passing a function updating the state
@@ -120,7 +130,7 @@ export class State<S> implements IHolder<S> {
    *
    * // transformation function that append a value at the end of an array and
    * // return the new array.
-   * const append => newVal => stateContent => {return [...stateContent, newVal]}
+   * const append = newVal => stateContent => {return [...stateContent, newVal]}
    *
    * // Append 2 at the end of the array contained in the state s.
    * // (Subscribers, like above will be triggered)
@@ -157,7 +167,7 @@ export class State<S> implements IHolder<S> {
    *
    * // transformation function that append a value at the end of an array and
    * // return the new array.
-   * const append => newVal => stateContent => [...stateContent, newVal]
+   * const append = newVal => stateContent => [...stateContent, newVal]
    *
    * // Set an initial value
    * // Set the new array contained in the state s.
