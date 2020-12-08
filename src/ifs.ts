@@ -11,6 +11,9 @@ export interface IHolder<T> {
   /** an observable on an object of type T
    */
   readonly obs$: Observable<T>;
+
+  /** the last value */
+  //readonly snapshot: T;
 }
 
 /** An interface that enforce the return of lenght
