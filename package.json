@@ -12,7 +12,7 @@
     "url": "httpi://github.com/nlko"
   },
   "scripts": {
-    "doc": "./node_modules/.bin/typedoc --out ./doc src/*.ts --exclude \"src/**/*+(index|.spec|.e2e).ts\" --excludeExternals --externalPattern \"**/node_modules/**\" --ignoreCompilerErrors",
+    "doc": "./node_modules/.bin/typedoc --out ./doc src/*.ts --exclude \"src/**/*+(index|.spec|.e2e).ts\" --excludeExternals --externalPattern \"**/node_modules/**\" ",
     "packagr": "ng-packagr -p ng-package.json",
     "test": "ts-node node_modules/jasmine/bin/jasmine",
     "release": "yarn packagr && yarn publish dist"
@@ -29,8 +29,8 @@
     "ts-node": "^8.1.0",
     "tslib": "^2",
     "tslint": "^6",
-    "typedoc": "^0.19.2",
-    "typescript": ">=4.0 <4.1",
+    "typedoc": "^0.20.35",
+    "typescript": ">=4.0 <4.2",
     "zone.js": "~0.10.3"
   },
   "peerDependencies": {
