@@ -1,9 +1,8 @@
-import { ILength } from './ifs';
-import { State } from './state';
-import { Informer } from './informer';
-import { IContainer } from './ifs';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { IContainer, ILength } from './ifs';
+import { Informer } from './informer';
+import { State } from './state';
 
 /** A generic list of literal.
  *

@@ -1,5 +1,5 @@
-import { Observable, ReplaySubject, Subject, PartialObserver } from 'rxjs';
-import { scan } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, PartialObserver, ReplaySubject, Subject } from 'rxjs';
+import { first, scan, switchMap, tap } from 'rxjs/operators';
 import { IHolder } from "./ifs";
 
 /** Type of the transformation functions that can be used to update a [[State]]
@@ -36,9 +36,12 @@ export class State<S> implements IHolder<S> {
   readonly obs$: Observable<S>;
 
   /** Internal current data subject. */
-  private currentState$: ReplaySubject<S>;
+  private currentState$s: ReplaySubject<S>;
+  private stateInitialized$s = new BehaviorSubject(false);
 
-  /** Internal subject to use for updating the stored content. */
+  /** Internal subject to use for updating the stored content.
+   * @deprecated
+   */
   private _updater$: Subject<StateUpdateFn<S>|S>;
 
   /** Property to retrieve a subject to be used to update the content.
@@ -73,7 +76,7 @@ export class State<S> implements IHolder<S> {
    */
   public get updater$s(): PartialObserver<StateUpdateFn<S>|S> {
     return {
-      next: (val: StateUpdateFn<S>|S) => this._updater$.next(val),
+      next: (val: StateUpdateFn<S>|S) => this.update(val),
       error: () => {}
     };
   }
@@ -93,16 +96,21 @@ export class State<S> implements IHolder<S> {
    */
   constructor(initialValue: S = undefined) {
     this._updater$ = new Subject<StateUpdateFn<S>|S>();
-    this.currentState$ = new ReplaySubject<S>(1);
-    this.obs$ = this.currentState$.asObservable();
+    this.currentState$s = new ReplaySubject<S>(1);
+    this.obs$ = this.currentState$s.asObservable();
+    if(initialValue) {
+      this.currentState$s.next(initialValue);
+      this.stateInitialized$s.next(true);
+    }
     const dispatcher = (state: S, op: StateUpdateFn<S>|S) =>
       typeof op === 'function' ? (op as StateUpdateFn<S>)(state) : (op as S);
     // TBD is there a memory leak
-    this._updater$.pipe(scan(dispatcher, initialValue)).subscribe(this.currentState$);
-
-    if (initialValue !== undefined) {
+    this._updater$.pipe(
+      tap(()=>{}, ()=>{}, ()=>{console.dir('done')}),
+      scan(dispatcher, initialValue)).subscribe(this.currentState$s);
+    /*if (initialValue !== undefined) {
       this.update(initialValue);
-    }
+    }*/
   }
 
   /** Method to be used to update the content.
@@ -176,6 +184,23 @@ export class State<S> implements IHolder<S> {
    * @return nothing
    */
   public update(fn: StateUpdateFn<S>|S): void {
-    this._updater$.next(fn as StateUpdateFn<S>);
+    //this._updater$.next(fn as StateUpdateFn<S>);
+
+    const dispatcher = (state: S, op: StateUpdateFn<S>|S) =>
+      typeof op === 'function' ? (op as StateUpdateFn<S>)(state) : (op as S);
+
+    this.stateInitialized$s.pipe(
+      switchMap(isInitialized => {
+        if(isInitialized) {
+          return this.obs$
+        } else {
+          return of(undefined) as Observable<S>
+        }
+      }),
+      first(),
+    ).subscribe((state) => {
+      this.currentState$s.next(dispatcher(state as unknown as S, fn))
+      this.stateInitialized$s.next(true);
+    })
   }
 }
